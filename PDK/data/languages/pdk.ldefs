@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<language_definitions>
+
+   <language processor="PDK13"
+            endian="little"
+            size="16"
+            variant="default"
+            version="1.0"
+            slafile="pdk13.sla"
+            processorspec="pdk13.pspec"
+            id="pdk13:LE:16:default">
+    <description>PDK13</description>
+    <compiler name="default" spec="pdk13.cspec" id="default"/>
+  </language> 
+</language_definitions>

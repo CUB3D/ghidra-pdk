@@ -1,7 +1,8 @@
 # PADAUK PDK architecture for Ghidra
 
 Supports:
-- PDK13 / SYM_84B
+- PDK13 / SYM_84B (PMS150C)
+- PDK14 / SYM_85A (PMS152)
 
 # Installing
 

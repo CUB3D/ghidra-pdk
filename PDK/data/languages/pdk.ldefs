@@ -12,5 +12,16 @@
             id="pdk13:LE:16:default">
     <description>PDK13</description>
     <compiler name="default" spec="pdk13.cspec" id="default"/>
-  </language> 
+  </language>
+   <language processor="PDK14"
+            endian="little"
+            size="16"
+            variant="default"
+            version="1.0"
+            slafile="pdk14.sla"
+            processorspec="pdk14.pspec"
+            id="pdk14:LE:16:default">
+    <description>PDK14</description>
+    <compiler name="default" spec="pdk14.cspec" id="default"/>
+  </language>  
 </language_definitions>

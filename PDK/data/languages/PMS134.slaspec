@@ -1,0 +1,80 @@
+# PMS134 specification: https://web.archive.org/web/20250319234116/https://www.padauk.com.cn/upload/doc/PMS133,%20PMS134%20datasheet_EN_V108_20240823.pdf
+
+@define HAS_MUL 1
+
+@include "pdk15.sinc"
+
+attach variables [ io ] [
+	flag   # 00
+	_      # 01 
+	sp     # 02
+	clkmd  # 03
+	inten  # 04
+	intrq  # 05
+	t16m   # 06
+	_
+	mulop  # 08
+	mulrh  # 09
+	eoscr  # 0A
+	_
+	integs # 0C
+	padier # 0D
+	pbdier # 0E
+	pcdier # 0F
+	pa     # 10
+	pac    # 11
+	paph   # 12
+	pb     # 13
+	pbc    # 14
+	pbph   # 15
+	pc     # 16
+	pcc    # 17
+	pcph   # 18
+	_ _ _ _ _ _ _
+	adcc   # 20
+	adcm   # 21
+	adcrh  # 22
+	adcrl  # 23
+	adcrgc # 24
+	_      # 25
+	misc   # 26
+	_ _ _ _ 
+	gpcc   # 2b
+	gpcs   # 2c
+	_ _ _
+	tm2c   # 30
+	tm2ct  # 31
+	tm2s   # 32
+	tm2b   # 33
+	tm3c   # 34
+	tm3ct  # 35
+	tm3s   # 36
+	tm3b   # 37
+	_ _ _ _ _ _ _ _
+	pwmg0c    # 40
+	pwmg0s    # 41
+	pwmg0dth  # 42
+	pwmg0dtl  # 43
+	pwmg0cubh # 44
+	pwmg0cubl # 45
+	pwmg1c    # 46
+	pwmg1s    # 47
+	pwmg1dth  # 48
+	pwmg1dtl  # 49
+	pwmg1cubh # 4a
+	pwmg1cubl # 4b
+	pwmg2c    # 4c
+	pwmg2s    # 4d
+	pwmg2dth  # 4e
+	pwmg2dtl  # 4f
+	pwmg2cubh # 50
+	pwmg2cubl # 51
+	
+	_ _ _ _ _ _ _
+	_ _ _ _ _ _ _
+	_ _ _ _ _ _ _
+	_ _ _ _ _ _ _
+	_ _ _ _ _ _ _
+	_ _ _ _ _ _ _
+	_ _ _ _
+];

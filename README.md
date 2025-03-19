@@ -3,6 +3,7 @@
 Supports:
 - PDK13 / SYM_84B (PMS150C)
 - PDK14 / SYM_85A (PMS152 / PMS132)
+- PDK15 / SYM_86A, SYM86B (PMS134)
 
 # Installing
 

@@ -36,5 +36,18 @@
     <description>PMS132</description>
     <compiler name="default" spec="pdk14.cspec" id="default"/>
   </language>  
+  
+  
+  <language processor="PMS134"
+            endian="little"
+            size="16"
+            variant="default"
+            version="1.0"
+            slafile="PMS134.sla"
+            processorspec="pdk15.pspec"
+            id="pms134:LE:16:default">
+    <description>PMS134</description>
+    <compiler name="default" spec="pdk15.cspec" id="default"/>
+  </language>  
     
 </language_definitions>

@@ -21,7 +21,8 @@ define token inst (16)
 	io=(0,5)
 
 	m6=(0,5)
-	m7=(1,7)
+	m7=(0,6)
+	m1_7=(1,7)
 
 	k11=(0,10)
 	k8=(0,7)
@@ -229,19 +230,19 @@ define pcodeop reti;
 
 # Memory
 
-:STT16 addr is op7_13=0b0000110 & m7 & op0=0 [addr = m7 << 1;] {
+:STT16 addr is op7_13=0b0000110 & m1_7 & op0=0 [addr = m1_7 << 1;] {
 	Timer16 = *[ram]:2 addr:1;
 }
 
-:LDT16 addr is op7_13=0b0000110 & m7 & op0=1 [addr = m7 << 1;] {
+:LDT16 addr is op7_13=0b0000110 & m1_7 & op0=1 [addr = m1_7 << 1;] {
 	*[ram]:2 addr:1 = Timer16;
 }
 
-:IDXM addr", A" is op7_13=0b0000111 & m7 & op0=0 [addr = m7 << 1;]{
+:IDXM addr", A" is op7_13=0b0000111 & m1_7 & op0=0 [addr = m1_7 << 1;]{
 	*[ram]:2 addr:1 = A;
 }
 
-:"IDXM A," addr is op7_13=0b0000111 & m7 & op0=1 [addr = m7 << 1;] {
+:"IDXM A," addr is op7_13=0b0000111 & m1_7 & op0=1 [addr = m1_7 << 1;] {
 	A = *[ram]:1 addr:1;
 }
 

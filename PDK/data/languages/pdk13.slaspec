@@ -28,10 +28,6 @@ define token inst (16)
 	n=(5,7)
 ;
 
-define register offset=0x60 size=2 [
-	Timer16
-];
-
 attach variables [ io ] [
 	flag   # 00
 	_      # 01 
@@ -61,8 +57,6 @@ attach variables [ io ] [
 	_ _ _ _ _ _ _
 ];
 
-
-define pcodeop nop;
 
 :NOP is op0_12=0x0000 {
 	nop();	
@@ -111,8 +105,6 @@ define pcodeop nop;
 	goto [tmp];
 	<nojmp>
 }
-
-define pcodeop unknown;
 
 :unknown1 is op0_12=0x0014 {unknown();}
 :unknown2 is op0_12=0x0015 {unknown();}

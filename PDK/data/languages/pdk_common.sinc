@@ -86,6 +86,10 @@ define register offset=0x10 size=1 [
 	lpwmg2dtl
 ];
 
+define register offset=0x60 size=2 [
+	Timer16
+];
+
 define bitrange ZF=flag[0,1] # Zero result
 				CF=flag[1,1] # Carry from op
 				AC=flag[2,1] # 4-bit overflow
@@ -106,3 +110,6 @@ macro ZCAO_sub(a, b) {
 	OV = scarry(a&0x7F, b&0x7F) ^ CF;
 	CF = scarry(a, b);
 }
+
+define pcodeop unknown;
+define pcodeop nop;

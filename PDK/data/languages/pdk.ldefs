@@ -13,15 +13,28 @@
     <description>PDK13</description>
     <compiler name="default" spec="pdk13.cspec" id="default"/>
   </language>
-   <language processor="PDK14"
+  
+   <language processor="PMS152"
             endian="little"
             size="16"
             variant="default"
             version="1.0"
-            slafile="pdk14.sla"
+            slafile="PMS152.sla"
             processorspec="pdk14.pspec"
-            id="pdk14:LE:16:default">
-    <description>PDK14</description>
+            id="pms152:LE:16:default">
+    <description>PMS152</description>
+    <compiler name="default" spec="pdk14.cspec" id="default"/>
+  </language>
+   <language processor="PMS132"
+            endian="little"
+            size="16"
+            variant="default"
+            version="1.0"
+            slafile="PMS132.sla"
+            processorspec="pdk14.pspec"
+            id="pms132:LE:16:default">
+    <description>PMS132</description>
     <compiler name="default" spec="pdk14.cspec" id="default"/>
   </language>  
+    
 </language_definitions>

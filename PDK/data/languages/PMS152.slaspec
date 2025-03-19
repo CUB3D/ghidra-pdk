@@ -1,0 +1,54 @@
+
+@define HAS_COMP_NADD 1
+
+@include "pdk14.sinc"
+
+attach variables [ io ] [
+	flag   # 00
+	_      # 01 
+	sp     # 02
+	clkmd  # 03
+	inten  # 04
+	intrq  # 05
+	t16m   # 06
+	_
+	misc   # 08
+	tm2b   # 09
+	eoscr  # 0A
+	_
+	integs # 0C
+	padier # 0D
+	pbdier # 0E
+	_      # 0F
+	pa     # 10
+	pac    # 11
+	paph   # 12
+	_      # 13
+	pb     # 14
+	pbc    # 15
+	pbph   # 16
+	tm2s   # 17
+	gpcc   # 18
+	gpcs   # 19
+	_ _
+	tm2c   # 1c 
+	tm2ct  # 1d
+	_ _
+	lpwmg0c   # 20
+	lpwmgclk  # 21
+	lpwmg0dth # 22
+	lpwmg0dtl # 23
+	lpwmgcubh # 24
+	lpwmgcubl # 25
+	lpwmg1c   # 26
+	_
+	lpwmg1dth # 28
+	lpwmg1dtl # 29
+	_ _ 
+	lpwmg2c   # 2c
+	_
+	lpwmg2dth # 2e
+	lpwmg2dtl # 2f
+	_ _ _ _ _ _ _ _ _ _ 
+	_ _ _ _ _ _
+];

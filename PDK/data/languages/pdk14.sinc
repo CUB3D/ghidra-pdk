@@ -1,92 +1,33 @@
 # Specification for the PDK14 / SYM_85A instruction set
-# used in chips such as the PMS152
+# used in chips such as the PMS152 and PMS132
 # Partially based on reverse-engineered opcodes from here: https://free-pdk.github.io/instruction-sets/PDK14
+#  as well as spec from here: https://web.archive.org/web/20250319134225/https://www.padauk.com.cn/upload/doc/PMS132(B)%20datasheet_EN_V109_20250121.pdf
 
 # ROM is from 1.5k to 2k words
 # SRAM is from 80 to 128 bytes
 @include "pdk_common.sinc"
 
 define token inst (16)
-	op0_13=(0,13)
 
-    op6_13=(6, 13)
-    op7_13=(7, 13)
-    op8_13=(8, 13)
+	op11_13=(11,13)
+	
     op9_13=(9, 13)
-    
-
-
-#	op10_12=(10,12)
-#	op8_12=(8,12)
-#    op6_12=(6, 12)
-#    op5_12=(5,12)
-#	op4=(4,4)
-#    op0_12=(0,12)
+    op8_13=(8, 13)
+    op7_13=(7, 13)
+    op6_13=(6, 13)
+	op0_13=(0,13)
 	op0=(0,0)
     
 	io=(0,5)
-#	
+
 	m6=(0,5)
-#	m4=(0,3)
 	m7=(1,7)
-#	
+
 	k11=(0,10)
 	k8=(0,7)
 	
 	n=(6,8)
 ;
-
-
-attach variables [ io ] [
-	flag   # 00
-	_      # 01 
-	sp     # 02
-	clkmd  # 03
-	inten  # 04
-	intrq  # 05
-	t16m   # 06
-	_
-	misc   # 08
-	tm2b   # 09
-	eoscr  # 0A
-	_
-	integs # 0C
-	padier # 0D
-	pbdier # 0E
-	_      # 0F
-	pa     # 10
-	pac    # 11
-	paph   # 12
-	_      # 13
-	pb     # 14
-	pbc    # 15
-	pbph   # 16
-	tm2s   # 17
-	gpcc   # 18
-	gpcs   # 19
-	_ _
-	tm2c   # 1c 
-	tm2ct  # 1d
-	_ _
-	lpwmg0c   # 20
-	lpwmgclk  # 21
-	lpwmg0dth # 22
-	lpwmg0dtl # 23
-	lpwmgcubh # 24
-	lpwmgcubl # 25
-	lpwmg1c   # 26
-	_
-	lpwmg1dth # 28
-	lpwmg1dtl # 29
-	_ _ 
-	lpwmg2c   # 2c
-	_
-	lpwmg2dth # 2e
-	lpwmg2dtl # 2f
-	_ _ _ _ _ _ _ _ _ _ 
-	_ _ _ _ _ _
-];
-
 
 :NOP is op0_13=0x0000 {
 	nop();	
@@ -245,13 +186,18 @@ define pcodeop reti;
 	return [tmp];
 }
 
-#TODO: find mul sku
-## Only exists on some SKUs, e.g. PMS134G
-#:MUL is op0_12=0x003C {
-#	local tmp:2 = zext(A) * zext(mulop);
-#	A = tmp:1;
-#	mulrh = tmp(1);
-#}
+# Only exists on some SKUs, e.g. PMS132
+@if defined(HAS_MUL)
+	:MUL is op0_13=0b00000001111100 {
+		local tmp:2 = zext(A) * zext(mulop);
+		A = tmp:1;
+		mulrh = tmp(1);
+	}
+@else
+	:UNSUPPORTED_MUL is op0_13=0b00000001111100 {
+		unknown();
+	}
+@endif
 
 :unknown7 is op0_13=0b00000001111101 {unknown();}
 :unknown8 is op0_13=0b00000001111110 {unknown();}
@@ -302,15 +248,53 @@ define pcodeop reti;
 # Special op with CF an IO
 
 :SWAPC io"."n is op9_13=0b00010 & n & io {
-	local tmp:1 = CF;
-	CF = (io & (1 << n)) != 0;
-	io = (io & !(1<<n)) | (tmp << n);
+	local tmp:1 = zext(CF);
+	local mask:1 = 1 << n;
+	CF = (io & mask) != 0;
+	io = (io & !mask) | (tmp << n);
 }
 
 
 # Operations with A and memory
 
-#TODO: COMP NADD
+# These 4 are only present on some SKUs e.g. PMS152
+@if defined(HAS_COMP_NADD)
+	:COMP "A, "m7 is op7_13=0b0001100 & m7 {
+		local EA:1 = m7;
+		local o:1 = *[ram]:1 EA;
+		ZCAO_sub(A, o);
+	}
+	:COMP m7", A" is op7_13=0b0001101 & m7 {
+		local EA:1 = m7;
+		local o:1 = *[ram]:1 EA;
+		ZCAO_sub(o, A);
+	}
+	:NADD "A, "m7 is op7_13=0b0001110 & m7 {
+		local EA:1 = m7;
+		local o:1 = *[ram]:1 EA;
+		*[ram]:1 EA = o + (-A);
+		ZCAO_add(o, -A);
+	}
+	:NADD m7", A" is op7_13=0b0001111 & m7 {
+		local EA:1 = m7;
+		local o:1 = *[ram]:1 EA;
+		*[ram]:1 EA = (-o) + A;
+		ZCAO_add(-o, A);
+	}
+@else
+	:UNSUPPORTED_COMP "A, "m7 is op7_13=0b0001100 & m7 {
+		unknown();
+	} 
+	:UNSUPPORTED_COMP m7", A" is op7_13=0b0001101 & m7 {
+		unknown();
+	}
+	:NSUPPORTED_NADD "A, "m7 is op7_13=0b0001110 & m7 {
+		unknown();
+	}
+	:UNSUPPORTED_NADD m7", A" is op7_13=0b0001111 & m7 {
+		unknown();
+	}
+@endif
 
 :ADD m7", A" is op7_13=0b0010000 & m7 {
 	local EA:1 = m7;
@@ -530,14 +514,14 @@ define pcodeop reti;
 :T0SN io"."n is op9_13=0b01100 & n & io {
 	local msk:1 = 1 << n;
 	io = io & msk;
-	if(io != 0) goto inst_next; 
+	if(io:1 != 0) goto inst_next; 
 	local a:2 =inst_next + 2; 
 	goto [a];
 }
 :T1SN io"."n is op9_13=0b01101 & n & io {
 	local msk:1 = 1 << n;
 	io = io & msk;
-	if(io == 0) goto inst_next; 
+	if(io:1 == 0) goto inst_next; 
 	local a:2 =inst_next + 2; 
 	goto [a];
 }

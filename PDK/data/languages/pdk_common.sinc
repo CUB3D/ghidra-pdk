@@ -11,6 +11,7 @@ define register offset=0x00 size=1 [
 ];
 
 # IO Registers
+# This has all registers for all chips of all pdk versions 
 define register offset=0x10 size=1 [
 	# pdk13 ones
 	flag
@@ -71,7 +72,7 @@ define register offset=0x10 size=1 [
 	pwm2cubl
 	# - - - - - 
 	# pdk14 ones
-	
+	pwmg2cubl
 	lpwmg0c
 	lpwmgclk
 	lpwmg0dth
@@ -83,7 +84,9 @@ define register offset=0x10 size=1 [
 	lpwmg1dtl 
 	lpwmg2c
 	lpwmg2dth
-	lpwmg2dtl
+	lpwmg2dtl				 
+	rstst
+	arcrgc
 ];
 
 define register offset=0x60 size=2 [

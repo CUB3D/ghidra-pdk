@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<compiler_spec>
+  <data_organization>
+	<pointer_size value="2" />
+  </data_organization>
+  <global>
+    <range space="rom"/>
+    <range space="register" first="0x13" last="0xFF"/>
+  </global>
+  <stackpointer register="SP" space="rom"/>
+  
+  
+  <default_proto>
+    <prototype name="__asmA" extrapop="2" stackshift="2" strategy="register">
+      <input>
+       
+      </input>
+      <output>
+        
+      </output>
+    </prototype>
+  </default_proto>
+ 
+</compiler_spec>

@@ -3,12 +3,9 @@
 # Partially based on reverse-engineered opcodes from here: https://free-pdk.github.io/instruction-sets/PDK13
 # Instruction semantics based on definitions from here: https://www.padauk.com.cn/upload/doc/PMS134G%20datasheet_EN_V000_20241205.pdf and https://www.padauk.com.tw/upload/doc/PMS15A,PMS150C%20datasheet_EN_V110_20230216.pdf
 
-define endian=little;
-define alignment=2;
-
-define space rom      type=ram_space      size=2 wordsize=1 default; # ROM, 1024 words
-define space ram      type=ram_space      size=1 wordsize=1; # SRAM, 64 bytes
-define space register type=register_space size=1;
+# ROM is 1024 words
+# SRAM is 64 bytes
+@include "pdk_common.sinc"
 
 define token inst (16)
 	op10_12=(10,12)
@@ -29,89 +26,6 @@ define token inst (16)
 	k8=(0,7)
 	
 	n=(5,7)
-;
-
-define register offset=0x00 size=1 [
-	A
-];
-
-# IO Registers
-define register offset=0x10 size=1 [
-	flag
-	_
-	sp
-	clkmd
-	inten
-	intrq
-	t16m
-	_
-	mulop
-	mulrh
-	eoscr
-	_
-	integs
-	padier
-	pbdier
-	pcdier
-	pa
-	pac
-	paph
-	pb
-	pbc
-	pbph
-	pc
-	pcc
-	pcph
-	_
-	_ _ _ _ _ _
-	adcc
-	adcm
-	adcrh
-	adcrl
-	adcrgc
-	_
-	misc
-	_ _ _ _
-	gpcc
-	gpcs
-	_ _ _
-	tm2c
-	tm2ct
-	tm2s
-	tm2b
-	tm3c
-	tm3ct
-	tm3s
-	tm3b
-	_ _ _ _ _ _ _ _
-	pwmg0c
-	pwmg0s
-	pwmg0dth
-	pwmg0dtl
-	pwmg0cubh
-	pwmg0cubl
-	pwmg1c
-	pwmg1s
-	pwmg1dth
-	pwmg1dtl
-	pwmg1cubh
-	pwmg1cubl
-	pwmg2c
-	pwmg2s
-	pwmg2dth
-	pwmg2dtl
-	pwmg2cubh
-	pwm2cubl    # 51
-];
-
-define register offset=0x60 size=2 [
-	Timer16
-];
-
-define bitrange ZF=flag[0,1] # Zero result
-				CF=flag[1,1] # Carry from op
-				AC=flag[2,1] # 4-bit overflow
-				OV=flag[3,1] # Sign change
 ;
 
 attach variables [ io ] [
@@ -143,22 +57,6 @@ attach variables [ io ] [
 	_ _ _ _ _ _ _
 ];
 
-macro ZCAO_add(a, b) {
-	ZF = (a + b) == 0;
-	AC = carry(a&0xF, b&0xF);
-	OV = carry(a&0x7F, b&0x7F) ^ CF;
-	CF = carry(a, b);
-}
-
-macro ZCAO_sub(a, b) {
-	ZF = (a - b) == 0;
-	AC = scarry(a&0xF, b&0xF);
-	OV = scarry(a&0x7F, b&0x7F) ^ CF;
-	CF = scarry(a, b);
-}
-
-
-define pcodeop nop;
 
 :NOP is op0_12=0x0000 {
 	nop();	
@@ -207,8 +105,6 @@ define pcodeop nop;
 	goto [tmp];
 	<nojmp>
 }
-
-define pcodeop unknown;
 
 :unknown1 is op0_12=0x0014 {unknown();}
 :unknown2 is op0_12=0x0015 {unknown();}

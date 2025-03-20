@@ -1,7 +1,6 @@
 # PMC884 specification: https://web.archive.org/web/20241008213643/https://frank-buss.de/tmp/pmc884.pdf
 # Note: document is watermarked as confidential, however ("Anyway he says the datasheet is not confidential and I'm allowed to show it to others for review"): https://web.archive.org/web/20250320150741/https://www.eevblog.com/forum/blog/eevblog-1144-padauk-programmer-reverse-engineering/msg1956808/#msg1956808
 
-#todo
 @define HAS_MUL 1
 @define HAS_PMODE 1
 @define HAS_PUSHW_PCN 1
@@ -11,7 +10,6 @@
 
 @include "pdk16.sinc"
 
-#todo
 attach variables [ io ] [
 	flag   # 00
 	fppen  # 01 

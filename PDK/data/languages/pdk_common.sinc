@@ -87,6 +87,26 @@ define register offset=0x10 size=1 [
 	lpwmg2dtl				 
 	rstst
 	arcrgc
+	# pdk16 ones
+	fppen
+	gdio
+	ihrcr
+	pwmcubh
+	pwmcubl
+	pwmptr0
+	pwmptr1
+	hcc
+	hc1a
+	hc2a
+	pwmc
+	pwms
+	pwmdth
+	pwmdtl
+	plscc
+	plscs
+	plsrh
+	plsrl
+	fppa_reset
 ];
 
 define register offset=0x60 size=2 [

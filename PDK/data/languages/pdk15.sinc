@@ -247,6 +247,7 @@ define pcodeop reti;
 :"NMOV A, "m8 is op8_14=0b0001000 & m8 {
 	local EA:1 = m8;
 	A = -(*[ram]:1 EA);
+	ZF = A == 0;
 }
 
 :NMOV m8", A" is op8_14=0b0001001 & m8 {
@@ -613,7 +614,7 @@ define pcodeop reti;
 # Special op with CF an IO
 
 :SWAPC io"."n is op10_14=0b10111 & n & io {
-	local tmp:1 = zext(CF);
+	local tmp:1 = CF;
 	local mask:1 = 1 << n;
 	CF = (io & mask) != 0;
 	io = (io & !mask) | (tmp << n);

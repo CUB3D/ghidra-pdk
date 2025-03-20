@@ -48,6 +48,18 @@
             id="pms134:LE:16:default">
     <description>PMS134</description>
     <compiler name="default" spec="pdk15.cspec" id="default"/>
-  </language>  
+  </language>
+  
+    <language processor="PMC884"
+            endian="little"
+            size="16"
+            variant="default"
+            version="1.0"
+            slafile="PMC884.sla"
+            processorspec="PMC884.pspec"
+            id="pmc884:LE:16:default">
+    <description>PMC884</description>
+    <compiler name="default" spec="pdk16.cspec" id="default"/>
+  </language>    
     
 </language_definitions>

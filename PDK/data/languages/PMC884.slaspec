@@ -1,0 +1,75 @@
+# PMC884 specification: https://web.archive.org/web/20241008213643/https://frank-buss.de/tmp/pmc884.pdf
+# Note: document is watermarked as confidential, however ("Anyway he says the datasheet is not confidential and I'm allowed to show it to others for review"): https://web.archive.org/web/20250320150741/https://www.eevblog.com/forum/blog/eevblog-1144-padauk-programmer-reverse-engineering/msg1956808/#msg1956808
+
+#todo
+@define HAS_MUL 1
+@define HAS_PMODE 1
+@define HAS_PUSHW_PCN 1
+@define HAS_PUSHW_M 1
+@define HAS_POPW_M 1
+@define HAS_POPW_PCN 1
+
+@include "pdk16.sinc"
+
+#todo
+attach variables [ io ] [
+	flag   # 00
+	fppen  # 01 
+	sp     # 02
+	clkmd  # 03
+	inten  # 04
+	intrq  # 05
+	t16m   # 06
+	gdio   # 07
+	mulop  # 08
+	# this is also defined as tm2b in spec
+	mulrh  # 09
+	eoscr  # 0A
+	ihrcr  # 0B
+	integs # 0C
+	padier # 0D
+	pbdier # 0E	
+	_
+	pa     # 10
+	pac    # 11
+	paph   # 12
+	_
+	pb     # 14
+	pbc    # 15
+	pbph   # 16
+	_ _ _ 
+	pwmcubh # 1a
+	pwmcubl # 1b
+	_ _ _ _
+	adcc   # 20
+	adcm   # 21
+	# This is also defined as gpcs
+	adcrh  # 22
+	adcrl  # 23
+	_
+	rstst  # 25
+	_
+	pwmptr0 # 27
+	pwmptr1 # 28 
+	_
+	hcc     # 2a
+	hc1a    # 2b
+	hc2a    # 2c
+	_ _ _
+	pwmc    # 30
+	pwms    # 31
+	pwmdth  # 32
+	pwmdtl  # 33
+	plscc   # 34
+	plscs   # 35
+	plsrh   # 36
+	# This is defined as both plsrl and tm2s in spec
+	plsrl   # 37
+	_ _ _
+	misc
+	tm2c    # 3c 
+	tm2ct   # 3d
+	gpcc    # 3e
+	# This has no official name
+	fppa_reset # 3f
+];

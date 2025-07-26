@@ -68,12 +68,11 @@ jobs:
         name: "Download artifacts"
         uses: actions/download-artifact@v4
         with:
-          pattern: "extension (*)"
-          path: "PDK/dist/"
+          pattern: "extension"
           merge-multiple: true
       -
         name: "GitHub release"
         uses: ncipollo/release-action@v1.12.0
         with:
-          artifacts: "PDK/dist/*"
+          artifacts: "*"
           draft: true

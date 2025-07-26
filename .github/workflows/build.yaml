@@ -33,7 +33,7 @@ jobs:
           version: "11.4"
       -
         name: "Build extension"
-        run: gradle buildExtension
+        run: cd PDK && gradle buildExtension
       -
         name: "Upload artifacts"
         uses: actions/upload-artifact@v4

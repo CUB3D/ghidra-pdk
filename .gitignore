@@ -3,3 +3,6 @@
 */.settings
 */.antProperties.xml
 **/*.sla
+*/dist
+*/build
+*/.gradle

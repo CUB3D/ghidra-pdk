@@ -1,7 +1,7 @@
 # Specification for the PDK13 / SYM_84B instruction set
 # used in chips such as the PMS150C and PMS134G
 # Partially based on reverse-engineered opcodes from here: https://free-pdk.github.io/instruction-sets/PDK13
-# Instruction semantics based on definitions from here: https://www.padauk.com.cn/upload/doc/PMS134G%20datasheet_EN_V000_20241205.pdf and https://www.padauk.com.tw/upload/doc/PMS15A,PMS150C%20datasheet_EN_V110_20230216.pdf
+# Instruction semantics based on definitions from here: https://www.padauk.com.cn/upload/doc/PMS134G%20datasheet_EN_V001_20250512.pdf and https://www.padauk.com.tw/upload/doc/PMS15A,PMS150C%20datasheet_EN_V110_20230216.pdf
 
 # ROM is 1024 words
 # SRAM is 64 bytes

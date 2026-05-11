@@ -43,42 +43,41 @@ define token inst (16)
 	A = res;	
 }
 
-:"IZSN A" is op0_14=0b000000001100010 {
+:IZSN A is op0_14=0b000000001100010 & A {
 	local res:1 = A + 1;
 	ZCAO_add(A, 1);
 	A = res;
 	
-	if(A != 0) goto <nojmp>;
-	local tmp:2 = inst_start + 6;
+	if(A != 0) goto inst_next;
+	local tmp:2 = inst_next + 2;
 	goto [tmp];
-	<nojmp>
 }
 
-:"DZSN A" is op0_14=0b000000001100011 {
+:DZSN A is op0_14=0b000000001100011 & A {
 	local res:1 = A - 1;
 	ZCAO_sub(A, 1);
 	A = res;
 	
-	if(A != 0) goto <nojmp>;
-	local tmp:2 = inst_start + 6;
+	if(A != 0) goto inst_next;
+	local tmp:2 = inst_next + 2;
 	goto [tmp];
-	<nojmp>
 }
 
 :unknown1 is op0_14=0b000000001100100 {unknown();}
 :unknown2 is op0_14=0b000000001100101 {unknown();}
 :unknown3 is op0_14=0b000000001100110 {unknown();}
 
-:"PCADD A" is op0_14=0b000000001100111 {
-	A = inst_start + A;
+:PCADD A is op0_14=0b000000001100111 & A {
+	local dest:2 = inst_start + A;
+    goto [dest];
 }
 
-:"NOT A" is op0_14=0b000000001101000 {
+:NOT A is op0_14=0b000000001101000 & A {
 	A = ~A;
 	ZF = A == 0;
 }
 
-:"NEG A" is op0_14=0b000000001101001 {
+:NEG A is op0_14=0b000000001101001 & A {
 	A = -A;
 	ZF = A == 0;
 }
@@ -105,9 +104,9 @@ define token inst (16)
 	A = (A << 1) | ocf;
 }
 
-:"SWAP A" is op0_14=0b000000001101110 {
+:SWAP A is op0_14=0b000000001101110 & A {
 	local tmp:1 = A;
-	A = (tmp & 0xF << 4) | ((tmp & 0xF0) >> 4);
+	A = ((tmp & 0xF) << 4) | ((tmp & 0xF0) >> 4);
 }
 
 :unknown4 is op0_14=0b000000001101111 {unknown();}
@@ -233,12 +232,14 @@ define pcodeop reti;
 	*[ram]:2 addr:1 = Timer16;
 }
 
-:IDXM addr", A" is op8_14=0b0000111 & m1_8 & op0=0 [addr = m1_8 << 1;]{
-	*[ram]:2 addr:1 = A;
+:IDXM addr, A is op8_14=0b0000111 & m1_8 & op0=0 & A [addr = m1_8 << 1;]{
+    local ptr:2 = *[ram]:2 addr:1;
+	*[ram]:1 ptr:2 = A;
 }
 
-:"IDXM A," addr is op8_14=0b0000111 & m1_8 & op0=1 [addr = m1_8 << 1;] {
-	A = *[ram]:1 addr:1;
+:IDXM A, addr is op8_14=0b0000111 & m1_8 & op0=1 & A [addr = m1_8 << 1;] {
+    local ptr:2 = *[ram]:2 addr:1;
+	A = *[ram]:1 ptr:2;
 }
 
 
@@ -438,7 +439,7 @@ define pcodeop reti;
 	*[ram]:1 m8:1 = res;
 	ZCAO_add(m1, 1);
 	if(res != 0) goto inst_next;
-	local a:2 =inst_next + 2; 
+	local a:2 = inst_next + 2; 
 	goto [a];
 }
 :DZSN m8 is op8_14=0b0100011 & m8 {
@@ -447,7 +448,7 @@ define pcodeop reti;
 	*[ram]:1 m8:1 = res;
 	ZCAO_sub(m1, 1);
 	if(res != 0) goto inst_next;
-	local a:2 =inst_next + 2; 
+	local a:2 = inst_next + 2; 
 	goto [a];
 }
 :INC m8 is op8_14=0b0100100 & m8 {
@@ -470,8 +471,9 @@ define pcodeop reti;
 }
 :NOT m8 is op8_14=0b0101000 & m8 {
 	local m1:1 = *[ram]:1 m8:1;
-	*[ram]:1 m8:1 = ~m1;
-	ZF = A == 0;
+    local comp:1 = ~m1;
+	*[ram]:1 m8:1 = comp;
+	ZF = comp == 0;
 }
 :NEG m8 is op8_14=0b0101001 & m8 {
 	local m1:1 = *[ram]:1 m8:1;
@@ -519,16 +521,16 @@ define pcodeop reti;
 
 :T0SN io"."n is op10_14=0b01100 & n & io {
 	local msk:1 = 1 << n;
-	io = io & msk;
-	if(io:1 != 0) goto inst_next; 
-	local a:2 =inst_next + 2; 
+	local masked:1 = io & msk;
+	if(masked:1 != 0) goto inst_next; 
+	local a:2 = inst_next + 2; 
 	goto [a];
 }
 :T1SN io"."n is op10_14=0b01101 & n & io {
 	local msk:1 = 1 << n;
-	io = io & msk;
-	if(io:1 == 0) goto inst_next; 
-	local a:2 =inst_next + 2; 
+	local masked:1 = io & msk;
+	if(masked:1 == 0) goto inst_next; 
+	local a:2 = inst_next + 2; 
 	goto [a];
 }
 :SET0 io"."n is op10_14=0b01110 & n & io {
@@ -617,7 +619,7 @@ define pcodeop reti;
 	local tmp:1 = CF;
 	local mask:1 = 1 << n;
 	CF = (io & mask) != 0;
-	io = (io & !mask) | (tmp << n);
+	io = (io & ~mask) | (tmp << n);
 }
 
 # Control transfers

@@ -119,15 +119,15 @@ define pcodeop watchdog_reset;
 :unknown5 is op0_14=0b000000001110001 {unknown();}
 
 :PUSHAF is op0_14=0b000000001110010 {
-	*[ram] sp = flag;
-	*[ram] (sp+1) = A;
+	*[ram] sp = A;
+	*[ram] (sp+1) = flag;
 	sp = sp + 2;
 }
 
 :POPAF is op0_14=0b000000001110011 {
 	sp = sp - 2;
-	flag = *[ram] sp;
-	A = *[ram] (sp+1);
+	A = *[ram] sp;
+	flag = *[ram] (sp+1);
 }
 
 :unknown6 is op0_14=0b000000001110100 {unknown();}

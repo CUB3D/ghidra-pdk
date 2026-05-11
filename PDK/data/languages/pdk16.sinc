@@ -72,7 +72,8 @@ define token inst (16)
 :unknown3 is op0_15=0b0000000000010110 {unknown();}
 
 :PCADD A is op0_15=0b0000000000010111 & A {
-	A = inst_start + A;
+	local dest:2 = inst_start + A;
+    goto [dest];
 }
 
 :NOT A is op0_15=0b0000000000011000 & A {
@@ -429,8 +430,8 @@ define pcodeop wait1;
 	:NADD A, m9 is op9_15=0b0011010 & m9 & A {
 		local EA:1 = m9;
 		local o:1 = *[ram]:1 EA;
-		*[ram]:1 EA = o + (-A);
 		ZCAO_add(o, -A);
+        A = o + (-A);
 	}
 	:NADD m9, A is op9_15=0b0011011 & m9 & A {
 		local EA:1 = m9;
@@ -539,9 +540,9 @@ define pcodeop wait1;
 	
 	ZF = res == 0;
 	AC = m1&0xF < (A&0xF + CF);
-	local ores:2 = ((zext(m1&0x7F) - zext(A&0x7F) - zext(CF))&1)^zext(CF);
+	local ores:2 = ((zext(m1&0x7F) - zext(A&0x7F) - zext(CF))>>7)^zext(CF);
 	OV = ores:1;
-	local wres:2 = ((zext(m1) + zext(A) - zext(CF)) >> 8) & 1;
+	local wres:2 = ((zext(m1) - zext(A) - zext(CF)) >> 8) & 1;
 	CF = wres:1;
 }
 :SUBC A, m9 is op9_15=0b0100111 & m9 & A {
@@ -550,9 +551,9 @@ define pcodeop wait1;
 	
 	ZF = res == 0;
 	AC = A&0xF < (m1&0xF + CF);
-	local ores:2 = ((zext(A&0x7F) - zext(m1&0x7F) - zext(CF))&1)^zext(CF);
+	local ores:2 = ((zext(A&0x7F) - zext(m1&0x7F) - zext(CF))>>7)^zext(CF);
 	OV = ores:1;
-	local wres:2 = ((zext(A) + zext(m1) - zext(CF)) >> 8) & 1;
+	local wres:2 = ((zext(A) - zext(m1) - zext(CF)) >> 8) & 1;
 	CF = wres:1;
 	
 	A = res;

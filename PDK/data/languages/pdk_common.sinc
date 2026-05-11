@@ -123,15 +123,15 @@ define bitrange ZF=flag[0,1] # Zero result
 macro ZCAO_add(a, b) {
 	ZF = (a + b) == 0;
 	AC = carry(a&0xF, b&0xF);
-	OV = carry(a&0x7F, b&0x7F) ^ CF;
 	CF = carry(a, b);
+	OV = carry(a&0x7F, b&0x7F) ^ CF;
 }
 
 macro ZCAO_sub(a, b) {
 	ZF = (a - b) == 0;
 	AC = scarry(a&0xF, b&0xF);
-	OV = scarry(a&0x7F, b&0x7F) ^ CF;
 	CF = scarry(a, b);
+	OV = scarry(a&0x7F, b&0x7F) ^ CF;
 }
 
 define pcodeop unknown;

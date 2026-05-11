@@ -248,7 +248,7 @@ define pcodeop reti;
 	:POPW addr is op9_15=0b0000010 & m1_9 & op0=0 [addr = m1_9 << 1;] {
 		sp = sp - 1;
 		local tmp:1 = *[ram]:1 sp;
-		*[ram]:1 addr:1 = tmp;
+		*[ram]:1 addr:2 = tmp;
 	}
 @else
 	:UNSUPPORTED_POPW addr is op9_15=0b0000010 & m1_9 & op0=0 {

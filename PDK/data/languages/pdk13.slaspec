@@ -5,6 +5,7 @@
 
 # ROM is 1024 words
 # SRAM is 64 bytes
+define space ram      type=ram_space      size=1 wordsize=1; # SRAM
 @include "pdk_common.sinc"
 
 define token inst (16)

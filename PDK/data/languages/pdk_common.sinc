@@ -2,7 +2,6 @@ define endian=little;
 define alignment=2;
 
 define space rom      type=ram_space      size=2 wordsize=1 default; # ROM
-define space ram      type=ram_space      size=1 wordsize=1; # SRAM
 define space register type=register_space size=1;
 
 

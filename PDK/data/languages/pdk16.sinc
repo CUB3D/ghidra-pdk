@@ -47,26 +47,24 @@ define token inst (16)
 	A = res;	
 }
 
-:"IZSN A" is op0_15=0b0000000000010010 {
+:IZSN A is op0_15=0b0000000000010010 & A {
 	local res:1 = A + 1;
 	ZCAO_add(A, 1);
 	A = res;
 	
-	if(A != 0) goto <nojmp>;
-	local tmp:2 = inst_start + 6;
+	if(A != 0) goto next_inst;
+	local tmp:2 = inst_next + 2;
 	goto [tmp];
-	<nojmp>
 }
 
-:"DZSN A" is op0_15=0b0000000000010011 {
+:DZSN A is op0_15=0b0000000000010011 & A {
 	local res:1 = A - 1;
 	ZCAO_sub(A, 1);
 	A = res;
 	
-	if(A != 0) goto <nojmp>;
-	local tmp:2 = inst_start + 6;
+	if(A != 0) goto inst_next;
+	local tmp:2 = inst_next + 2;
 	goto [tmp];
-	<nojmp>
 }
 
 :unknown1 is op0_15=0b0000000000010100 {unknown();}
@@ -111,7 +109,7 @@ define token inst (16)
 
 :"SWAP A" is op0_15=0b0000000000011110 {
 	local tmp:1 = A;
-	A = (tmp & 0xF << 4) | ((tmp & 0xF0) >> 4);
+	A = ((tmp & 0xF) << 4) | ((tmp & 0xF0) >> 4);
 }
 
 define pcodeop delay;
@@ -233,9 +231,13 @@ define pcodeop reti;
 
 
 # Memory
+
+# Store to timer16 from data memory
 :STT16 addr is op9_15=0b0000001 & m1_9 & op0=0 [addr = m1_9 << 1;] {
 	Timer16 = *[ram]:2 addr:1;
 }
+
+# Load to data memory from timer16
 :LDT16 addr is op9_15=0b0000001 & m1_9 & op0=1 [addr = m1_9 << 1;] {
 	*[ram]:2 addr:1 = Timer16;
 }
@@ -275,11 +277,13 @@ define pcodeop icall;
 }
 
 :IDXM addr", A" is op9_15=0b0000100 & m1_9 & op0=0 [addr = m1_9 << 1;]{
-	*[ram]:2 addr:1 = A;
+    local ptr:2 = *[ram]:2 addr:1;
+	*[ram]:1 ptr:2 = A;
 }
 
 :"IDXM A," addr is op9_15=0b0000100 & m1_9 & op0=1 [addr = m1_9 << 1;] {
-	A = *[ram]:1 addr:1;
+    local ptr:2 = *[ram]:2 addr:1;
+	A = *[ram]:1 ptr:2;
 }
 :LDTABL addr is op9_15=0b0000101 & m1_9 & op0=0 [ addr = m1_9 << 1;] {
 	A = *[rom]:1 addr:2;
@@ -368,16 +372,16 @@ define pcodeop icall;
 # Bit operations with IO
 :T0SN io"."n is op9_15=0b0010000 & n & io {
 	local msk:1 = 1 << n;
-	io = io & msk;
-	if(io:1 != 0) goto inst_next; 
-	local a:2 =inst_next + 2; 
+	local masked:1 = io & msk;
+	if(masked:1 != 0) goto inst_next; 
+	local a:2 = inst_next + 2; 
 	goto [a];
 }
 :T1SN io"."n is op9_15=0b0010001 & n & io {
 	local msk:1 = 1 << n;
-	io = io & msk;
-	if(io:1 == 0) goto inst_next; 
-	local a:2 =inst_next + 2; 
+	local masked:1 = io & msk;
+	if(masked:1 == 0) goto inst_next; 
+	local a:2 = inst_next + 2; 
 	goto [a];
 }
 :SET0 io"."n is op9_15=0b0010010 & n & io {
@@ -406,7 +410,7 @@ define pcodeop wait1;
 	local tmp:1 = CF;
 	local mask:1 = 1 << n;
 	CF = (io & mask) != 0;
-	io = (io & !mask) | (tmp << n);
+	io = (io & ~mask) | (tmp << n);
 }
 
 # Operations with A and memory
@@ -510,7 +514,7 @@ define pcodeop wait1;
 	
 	ZF = res == 0;
 	AC = ((A&0xF + m1&0xF + CF) >> 4) & 1;
-	local ores:2 = ((zext(A&0x7F) + zext(m1&0x7F) + zext(CF))&1)^zext(CF);
+	local ores:2 = ((zext(A&0x7F) + zext(m1&0x7F) + zext(CF))>>7)^zext(CF);
 	OV = ores:1;
 	local wres:2 = ((zext(A) + zext(m1) + zext(CF)) >> 8) & 1;
 	CF = wres:1;
@@ -521,7 +525,7 @@ define pcodeop wait1;
 	
 	ZF = res == 0;
 	AC = ((A&0xF + m1&0xF + CF) >> 4) & 1;
-	local ores:2 = ((zext(A&0x7F) + zext(m1&0x7F) + zext(CF))&1)^zext(CF);
+	local ores:2 = ((zext(A&0x7F) + zext(m1&0x7F) + zext(CF))>>7)^zext(CF);
 	OV = ores:1;
 	local wres:2 = ((zext(A) + zext(m1) + zext(CF)) >> 8) & 1;
 	CF = wres:1;
@@ -646,8 +650,9 @@ define pcodeop wait1;
 }
 :NOT m9 is op9_15=0b0111000 & m9 {
 	local m1:1 = *[ram]:1 m9:1;
-	*[ram]:1 m9:1 = ~m1;
-	ZF = A == 0;
+    local comp:1 = ~m1;
+	*[ram]:1 m9:1 = comp;
+	ZF = comp == 0;
 }
 :NEG m9 is op9_15=0b0111001 & m9 {
 	local m1:1 = *[ram]:1 m9:1;

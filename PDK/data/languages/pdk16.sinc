@@ -35,13 +35,13 @@ define token inst (16)
 	nop();	
 }
 
-:"ADDC A" is op0_15=0b0000000000010000 {
+:ADDC A is op0_15=0b0000000000010000 & A {
 	local res:1 = A + CF;
 	ZCAO_add(A, CF);
 	A = res;
 }
 
-:"SUBC A" is op0_15=0b0000000000010001 {
+:SUBC A is op0_15=0b0000000000010001 & A {
 	local res:1 = A - CF;
 	ZCAO_sub(A, CF);
 	A = res;	
@@ -71,49 +71,49 @@ define token inst (16)
 :unknown2 is op0_15=0b0000000000010101 {unknown();}
 :unknown3 is op0_15=0b0000000000010110 {unknown();}
 
-:"PCADD A" is op0_15=0b0000000000010111 {
+:PCADD A is op0_15=0b0000000000010111 & A {
 	A = inst_start + A;
 }
 
-:"NOT A" is op0_15=0b0000000000011000 {
+:NOT A is op0_15=0b0000000000011000 & A {
 	A = ~A;
 	ZF = A == 0;
 }
 
-:"NEG A" is op0_15=0b0000000000011001 {
+:NEG A is op0_15=0b0000000000011001 & A {
 	A = -A;
 	ZF = A == 0;
 }
 
-:"SR A" is op0_15=0b0000000000011010 {
+:SR A is op0_15=0b0000000000011010 & A {
 	CF = A & 1;
 	A = A >> 1;
 }
 
-:"SL A" is op0_15=0b0000000000011011 {
+:SL A is op0_15=0b0000000000011011 & A {
 	CF = A >> 7;
 	A = A << 1;
 }
 
-:"SRC A" is op0_15=0b0000000000011100 {
+:SRC A is op0_15=0b0000000000011100 & A {
 	local ocf:1 = CF;
 	CF = A & 1;
 	A = (A >> 1) | (ocf << 7);
 }
 
-:"SLC A" is op0_15=0b0000000000011101 {
+:SLC A is op0_15=0b0000000000011101 & A {
 	local ocf:1 = CF;
 	CF = A >> 7;
 	A = (A << 1) | ocf;
 }
 
-:"SWAP A" is op0_15=0b0000000000011110 {
+:SWAP A is op0_15=0b0000000000011110 & A {
 	local tmp:1 = A;
 	A = ((tmp & 0xF) << 4) | ((tmp & 0xF0) >> 4);
 }
 
 define pcodeop delay;
-:"DELAY A" is op0_15=0b0000000000011111 {
+:DELAY A is op0_15=0b0000000000011111 & A {
 	delay(A);
 	A = 0;
 }
@@ -220,11 +220,11 @@ define pcodeop reti;
 @endif
 
 # Operations with A and IO
-:MOV.IO io", A" is op6_15=0b00000010 & io {
+:MOV.IO io, A is op6_15=0b00000010 & io & A {
 	io = A;
 }
 
-:"MOV.IO A," io   is op6_15=0b00000011 & io {
+:MOV.IO A, io   is op6_15=0b00000011 & io & A {
 	A = io;
 	ZF = A == 0;
 }
@@ -276,12 +276,12 @@ define pcodeop icall;
 	icall(addr:2);
 }
 
-:IDXM addr", A" is op9_15=0b0000100 & m1_9 & op0=0 [addr = m1_9 << 1;]{
+:IDXM addr, A is op9_15=0b0000100 & m1_9 & op0=0 & A [addr = m1_9 << 1;] {
     local ptr:2 = *[ram]:2 addr:1;
 	*[ram]:1 ptr:2 = A;
 }
 
-:"IDXM A," addr is op9_15=0b0000100 & m1_9 & op0=1 [addr = m1_9 << 1;] {
+:IDXM A, addr is op9_15=0b0000100 & m1_9 & op0=1 & A [addr = m1_9 << 1;] {
     local ptr:2 = *[ram]:2 addr:1;
 	A = *[ram]:1 ptr:2;
 }
@@ -307,24 +307,24 @@ define pcodeop icall;
 
 
 # Operations with A and IO
-:XOR.IO io", A" is op6_15=0b0001000000 & io {
+:XOR.IO io, A is op6_15=0b0001000000 & io & A {
 	io = io ^ A;
 }
-:"XOR.IO A, "io is op6_15=0b0001000001 & io {
+:XOR.IO A, io is op6_15=0b0001000001 & io & A {
 	A = A ^ io;
 	ZF = A == 0;
 }
 
 # Operations with A and memory
 
-:CNEQSN m9", A" is op9_15=0b0001010 & m9 {
+:CNEQSN m9, A is op9_15=0b0001010 & m9 & A {
 	local tmp:1 = *[ram]:1 m9:1;
 	ZCAO_sub(tmp, A);
 	if(tmp == A) goto inst_next;
 	local a:2 =inst_next + 2; 
 	goto [a];
 }
-:"CNEQSN A," m9 is op9_15=0b0001011 & m9 {
+:CNEQSN A, m9 is op9_15=0b0001011 & m9 & A {
 	local tmp:1 = *[ram]:1 m9:1;
 	ZCAO_sub(A, tmp);
 	if(tmp == A) goto inst_next;
@@ -333,39 +333,39 @@ define pcodeop icall;
 }
 
 # Operations with A and 8 bit literal
-:"ADD A," k8 is op8_15=0b00011000 & k8 {
+:ADD A, k8 is op8_15=0b00011000 & k8 & A {
 	ZCAO_add(A, k8:1);
 	A = A + k8:1;
 }
-:"SUB A," k8 is op8_15=0b00011001 & k8 {
+:SUB A, k8 is op8_15=0b00011001 & k8 & A {
 	ZCAO_sub(A, k8:1);
 	A = A - k8:1;
 }
-:"CEQSN A," k8 is op8_15=0b00011010 & k8 {
+:CEQSN A, k8 is op8_15=0b00011010 & k8 {
 	ZCAO_sub(A, k8:1);
 	if(k8:1 != A) goto inst_next;
 	local a:2 =inst_next + 2; 
 	goto [a];
 }
-:"CNEQSN A," k8 is op8_15=0b00011011 & k8 {
+:CNEQSN A, k8 is op8_15=0b00011011 & k8 & A {
 	ZCAO_sub(A, k8:1);
 	if(k8:1 == A) goto inst_next;
 	local a:2 =inst_next + 2; 
 	goto [a];
 }
-:"AND A," k8 is op8_15=0b00011100 & k8 {
+:AND A, k8 is op8_15=0b00011100 & k8 & A {
 	A = A & k8:1;
 	ZF = A == 0;
 }
-:"OR A," k8 is op8_15=0b00011101 & k8 {
+:OR A, k8 is op8_15=0b00011101 & k8 & A {
 	A = A | k8:1;
 	ZF = A == 0;
 }
-:"XOR A," k8 is op8_15=0b00011110 & k8 {
+:XOR A, k8 is op8_15=0b00011110 & k8 & A {
 	A = A ^ k8:1;
 	ZF = A == 0;
 }
-:"MOV A," k8 is op8_15=0b00011111 & k8 {
+:MOV A, k8 is op8_15=0b00011111 & k8 & A {
 	A = k8:1;
 }
 
@@ -414,47 +414,47 @@ define pcodeop wait1;
 }
 
 # Operations with A and memory
-:"NMOV A, "m9 is op9_15=0b0011000 & m9 {
+:NMOV A, m9 is op9_15=0b0011000 & m9 & A {
 	local EA:1 = m9;
 	A = -(*[ram]:1 EA);
 	ZF = A == 0;
 }
-:NMOV m9", A" is op9_15=0b0011001 & m9 {
+:NMOV m9, A is op9_15=0b0011001 & m9 & A {
 	local EA:1 = m9;
 	*[ram]:1 EA = -A;
 }
 
 # These 2 are only present on some SKUs
 @if defined(HAS_COMP_NADD)
-	:NADD "A, "m9 is op9_15=0b0011010 & m9 {
+	:NADD A, m9 is op9_15=0b0011010 & m9 & A {
 		local EA:1 = m9;
 		local o:1 = *[ram]:1 EA;
 		*[ram]:1 EA = o + (-A);
 		ZCAO_add(o, -A);
 	}
-	:NADD m9", A" is op9_15=0b0011011 & m9 {
+	:NADD m9, A is op9_15=0b0011011 & m9 & A {
 		local EA:1 = m9;
 		local o:1 = *[ram]:1 EA;
 		*[ram]:1 EA = (-o) + A;
 		ZCAO_add(-o, A);
 	}
 @else
-	:NSUPPORTED_NADD "A, "m9 is op9_15=0b0011010 & m9 {
+	:NSUPPORTED_NADD A, m9 is op9_15=0b0011010 & m9 & A {
 		unknown();
 	}
-	:UNSUPPORTED_NADD m9", A" is op9_15=0b0011011 & m9 {
+	:UNSUPPORTED_NADD m9, A is op9_15=0b0011011 & m9 & A {
 		unknown();
 	}
 @endif
 
-:"CEQSN A," m9 is op9_15=0b0011100 & m9 {
+:CEQSN A, m9 is op9_15=0b0011100 & m9 & A {
 	local tmp:1 = *[ram]:1 m9:1;
 	ZCAO_sub(A, tmp);
 	if(tmp != A) goto inst_next;
 	local a:2 =inst_next + 2; 
 	goto [a];
 }
-:CEQSN m9", A" is op9_15=0b0011101 & m9 {
+:CEQSN m9, A is op9_15=0b0011101 & m9 & A {
 	local tmp:1 = *[ram]:1 m9:1;
 	ZCAO_sub(tmp, A);
 	if(tmp != A) goto inst_next;
@@ -464,50 +464,50 @@ define pcodeop wait1;
 
 # These 2 are only present on some SKUs
 @if defined(HAS_COMP_NADD)
-	:COMP "A, "m9 is op9_15=0b0011110 & m9 {
+	:COMP A, m9 is op9_15=0b0011110 & m9 & A {
 		local EA:1 = m9;
 		local o:1 = *[ram]:1 EA;
 		ZCAO_sub(A, o);
 	}
-	:COMP m9", A" is op9_15=0b0011111 & m9 {
+	:COMP m9, A is op9_15=0b0011111 & m9 & A {
 		local EA:1 = m9;
 		local o:1 = *[ram]:1 EA;
 		ZCAO_sub(o, A);
 	}
 @else
-	:UNSUPPORTED_COMP "A, "m9 is op9_15=0b0011110 & m9 {
+	:UNSUPPORTED_COMP A, m9 is op9_15=0b0011110 & m9 & A {
 		unknown();
 	} 
-	:UNSUPPORTED_COMP m9", A" is op9_15=0b0011111 & m9 {
+	:UNSUPPORTED_COMP m9, A is op9_15=0b0011111 & m9 & A {
 		unknown();
 	}
 @endif
 
-:ADD m9", A" is op9_15=0b0100000 & m9 {
+:ADD m9, A is op9_15=0b0100000 & m9 & A {
 	local EA:1 = m9;
 	local o:1 = *[ram]:1 EA;
 	*[ram]:1 EA = o + A;
 	ZCAO_add(o, A);
 }
-:"ADD A," m9 is op9_15=0b0100001 & m9 {
+:ADD A, m9 is op9_15=0b0100001 & m9 & A {
 	local EA:1 = m9;
 	local o:1 = *[ram]:1 EA;
 	A = A + o;
 	ZCAO_add(A, o);
 }
-:SUB m9", A" is op9_15=0b0100010 & m9 {
+:SUB m9, A is op9_15=0b0100010 & m9 & A {
 	local EA:1 = m9;
 	local o:1 = *[ram]:1 EA;
 	*[ram]:1 EA = o - A;
 	ZCAO_sub(o, A);
 }
-:"SUB A," m9 is op9_15=0b0100011 & m9 {
+:SUB A, m9 is op9_15=0b0100011 & m9 & A {
 	local EA:1 = m9;
 	local o:1 = *[ram]:1 EA;
 	A = A - o;
 	ZCAO_sub(A, o);
 }
-:ADDC m9", A" is op9_15=0b0100100 & m9 {
+:ADDC m9, A is op9_15=0b0100100 & m9 & A {
 	local m1:1 = *[ram]:1 m9:1;
 	local res:1 = A + m1 + CF;
 	*[ram]:1 m9:1 = res;
@@ -519,7 +519,7 @@ define pcodeop wait1;
 	local wres:2 = ((zext(A) + zext(m1) + zext(CF)) >> 8) & 1;
 	CF = wres:1;
 }
-:"ADDC A," m9 is op9_15=0b0100101 & m9 {
+:ADDC A, m9 is op9_15=0b0100101 & m9 & A {
 	local m1:1 = *[ram]:1 m9:1;
 	local res:1 = A + m1 + CF;
 	
@@ -532,7 +532,7 @@ define pcodeop wait1;
 	
 	A = res;
 }
-:SUBC m9", A" is op9_15=0b0100110 & m9 {
+:SUBC m9, A is op9_15=0b0100110 & m9 & A {
 	local m1:1 = *[ram]:1 m9:1;
 	local res:1 = m1 - A - CF;
 	*[ram]:1 m9:1 = res;
@@ -544,7 +544,7 @@ define pcodeop wait1;
 	local wres:2 = ((zext(m1) + zext(A) - zext(CF)) >> 8) & 1;
 	CF = wres:1;
 }
-:"SUBC A," m9 is op9_15=0b0100111 & m9 {
+:SUBC A, m9 is op9_15=0b0100111 & m9 & A {
 	local m1:1 = *[ram]:1 m9:1;
 	local res:1 = A - m1 - CF;
 	
@@ -557,43 +557,43 @@ define pcodeop wait1;
 	
 	A = res;
 }
-:AND m9", A" is op9_15=0b0101000 & m9 {
+:AND m9, A is op9_15=0b0101000 & m9 & A {
 	local m1:1 = *[ram]:1 m9:1;
 	local val:1 = A & m1;
 	*[ram]:1 m9:1 = val;
 	ZF = val == 0;
 }
-:"AND A," m9 is op9_15=0b0101001 & m9 {
+:AND A, m9 is op9_15=0b0101001 & m9 & A {
 	local m1:1 = *[ram]:1 m9:1;
 	A = A & m1;
 	ZF = A == 0;
 }
-:OR m9", A" is op9_15=0b0101010 & m9 {
+:OR m9, A is op9_15=0b0101010 & m9 & A {
 	local m1:1 = *[ram]:1 m9:1;
 	local val:1 = A | m1;
 	*[ram]:1 m9:1 = val;
 	ZF = val == 0;
 }
-:"OR A," m9 is op9_15=0b0101011 & m9 {
+:OR A, m9 is op9_15=0b0101011 & m9 & A {
 	local m1:1 = *[ram]:1 m9:1;
 	A = A | m1;
 	ZF = A == 0;
 }
-:XOR m9", A" is op9_15=0b0101100 & m9 {
+:XOR m9, A is op9_15=0b0101100 & m9 & A {
 	local m1:1 = *[ram]:1 m9:1;
 	local val:1 = A ^ m1;
 	*[ram]:1 m9:1 = val;
 	ZF = val == 0;
 }
-:"XOR A," m9 is op9_15=0b0101101 & m9 {
+:XOR A, m9 is op9_15=0b0101101 & m9 & A {
 	local m1:1 = *[ram]:1 m9:1;
 	A = A ^ m1;
 	ZF = A == 0;
 }
-:MOV m9", A" is op9_15=0b0101110 & m9 {
+:MOV m9, A is op9_15=0b0101110 & m9 & A {
 	*[ram]:1 m9:1 = A;
 }
-:"MOV A," m9 is op9_15=0b0101111 & m9 {
+:MOV A, m9 is op9_15=0b0101111 & m9 & A {
 	local m1:1 = *[ram]:1 m9:1;
 	A = m1;
 	ZF = A == 0;

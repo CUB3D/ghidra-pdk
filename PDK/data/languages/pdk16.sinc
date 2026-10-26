@@ -53,7 +53,7 @@ define token inst (16)
 	ZCAO_add(A, 1);
 	A = res;
 	
-	if(A != 0) goto next_inst;
+	if(A != 0) goto inst_next;
 	local tmp:2 = inst_next + 2;
 	goto [tmp];
 }
@@ -73,7 +73,7 @@ define token inst (16)
 :unknown3 is op0_15=0b0000000000010110 {unknown();}
 
 :PCADD A is op0_15=0b0000000000010111 & A {
-	local dest:2 = inst_start + A;
+	local dest:2 = inst_start + zext(A);
     goto [dest];
 }
 
@@ -343,7 +343,7 @@ define pcodeop icall;
 	ZCAO_sub(A, k8:1);
 	A = A - k8:1;
 }
-:CEQSN A, k8 is op8_15=0b00011010 & k8 {
+:CEQSN A, k8 is op8_15=0b00011010 & k8 & A {
 	ZCAO_sub(A, k8:1);
 	if(k8:1 != A) goto inst_next;
 	local a:2 =inst_next + 2; 
@@ -726,13 +726,13 @@ define pcodeop wait1;
 }
 
 # Control transfers
-:GOTO addr is op13_15=0b110 & k13 [addr = k13 << 1; ] {
-	local a:2 = addr;
+:GOTO k13 is op13_15=0b110 & k13 {
+	local a:2 = k13;
 	goto [a];
 }
-:CALL addr is op13_15=0b111 & k13 [addr = k13 << 1; ] {
+:CALL k13 is op13_15=0b111 & k13 {
 	*[ram]:2 sp = inst_next;
 	sp = sp + 2;
-	local a:2 = addr;
+	local a:2 = k13;
 	call [a];
 }

@@ -69,7 +69,7 @@ define token inst (16)
 :unknown3 is op0_14=0b000000001100110 {unknown();}
 
 :PCADD A is op0_14=0b000000001100111 & A {
-	local dest:2 = inst_start + A;
+	local dest:2 = inst_start + zext(A);
     goto [dest];
 }
 
@@ -405,7 +405,7 @@ define pcodeop reti;
 	A = A & m1;
 	ZF = A == 0;
 }
-:"OR A, m8 is op8_14=0b0011101 & m8 & A {
+:OR A, m8 is op8_14=0b0011101 & m8 & A {
 	local m1:1 = *[ram]:1 m8:1;
 	A = A | m1;
 	ZF = A == 0;
@@ -625,13 +625,13 @@ define pcodeop reti;
 
 # Control transfers
 
-:GOTO addr is op12_14=0b110 & k12 [addr = k12 << 1; ] {
-	local a:2 = addr;
+:GOTO k12 is op12_14=0b110 & k12 {
+	local a:2 = k12;
 	goto [a];
 }
-:CALL addr is op12_14=0b111 & k12 [addr = k12 << 1; ] {
+:CALL k12 is op12_14=0b111 & k12 {
 	*[ram]:2 sp = inst_next;
 	sp = sp + 2;
-	local a:2 = addr;
+	local a:2 = k12;
 	call [a];
 }

@@ -31,17 +31,17 @@ define token inst (16)
 
 attach variables [ io ] [
 	flag   # 00
-	_      # 01 
+	io01   # 01 
 	sp     # 02
 	clkmd  # 03
 	inten  # 04
 	intrq  # 05
 	t16m   # 06
-	_
+	io07
 	mulop  # 08
 	mulrh  # 09
 	eoscr  # 0A
-	_
+	io0B
 	integs # 0C
 	padier # 0D
 	pbdier # 0E
@@ -55,7 +55,13 @@ attach variables [ io ] [
 	pc     # 16
 	pcc    # 17
 	pcph   # 18
-	_ _ _ _ _ _ _
+    io19
+    io1A
+    io1B
+    io1C
+    io1D
+    io1E
+    io1F
 ];
 
 
@@ -111,7 +117,7 @@ attach variables [ io ] [
 
 :PCADD A is op0_12=0x0017 & A {
     # TODO: is this +A or <<1?
-	local dest:2 = inst_start + A;
+	local dest:2 = inst_start + zext(A);
 	goto [dest];
 }
 
@@ -572,13 +578,13 @@ define pcodeop reti;
 	A = k8:1;
 }
 
-:GOTO addr is op10_12=0b110 & k10 [addr = k10 << 1; ] {
-	local a:2 = addr;
+:GOTO k10 is op10_12=0b110 & k10 {
+	local a:2 = k10;
 	goto [a];
 }
-:CALL addr is op10_12=0b111 & k10 [addr = k10 << 1; ] {
+:CALL k10 is op10_12=0b111 & k10 {
 	*[ram]:2 sp = inst_next;
 	sp = sp + 2;
-	local a:2 = addr;
+	local a:2 = k10;
 	call [a];
 }

@@ -7,6 +7,7 @@
 @define HAS_PUSHW_M 1
 @define HAS_POPW_M 1
 @define HAS_POPW_PCN 1
+@define HAS_COMP_NADD 1
 
 @include "pdk16_pre.sinc"
 

@@ -266,11 +266,15 @@ define pcodeop icall;
 	A = *[ram]:1 ptr:2;
 }
 :LDTABL addr is op9_15=0b0000101 & m1_9 & op0=0 [ addr = m1_9 << 1;] {
-	A = *[rom]:1 addr:2;
+    local tmp:2 = *[ram]:2 addr:2;
+    tmp = tmp << 1;
+	A = *[rom]:1 tmp;
 }
 
 :LDTABH addr is op9_15=0b0000101 & m1_9 & op0=1 [ addr = m1_9 << 1;] {
-	A = *[rom]:1 (addr:2+1);
+    local tmp:2 = *[ram]:2 addr:2;
+    tmp = (tmp << 1) + 1;
+	A = *[rom]:1 tmp;
 }
 
 

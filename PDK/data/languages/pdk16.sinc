@@ -421,7 +421,7 @@ define pcodeop wait1;
 		ZCAO_add(-o, A);
 	}
 @else
-	:NSUPPORTED_NADD A, m9 is op9_15=0b0011010 & m9 & A {
+	:UNSUPPORTED_NADD A, m9 is op9_15=0b0011010 & m9 & A {
 		unknown();
 	}
 	:UNSUPPORTED_NADD m9, A is op9_15=0b0011011 & m9 & A {

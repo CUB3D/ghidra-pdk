@@ -222,10 +222,10 @@ define pcodeop reti;
 
 @if defined(HAS_POPW_M)
 	:POPW addr is op9_15=0b0000010 & m1_9 & op0=0 [addr = m1_9 << 1;] {
-		sp = sp - 1;
+		sp = sp - 2;
 		local s:2 = zext(sp);
-		local tmp:1 = *[ram]:1 s;
-		*[ram]:1 addr:2 = tmp;
+		local tmp:2 = *[ram]:2 s;
+		*[ram]:2 addr:2 = tmp;
 	}
 @else
 	:UNSUPPORTED_POPW addr is op9_15=0b0000010 & m1_9 & op0=0 {
@@ -235,10 +235,10 @@ define pcodeop reti;
 
 @if defined(HAS_PUSHW_M)
 	:PUSHW addr is op9_15=0b0000010 & m1_9 & op0=1 [addr = m1_9 << 1;] {
-		local tmp:1 = *[ram]:1 addr:2;
+		local tmp:2 = *[ram]:2 addr:2;
 		local s:2 = zext(sp);
-		*[ram]:1 s = tmp;
-		sp = sp + 1;
+		*[ram]:2 s = tmp;
+		sp = sp + 2;
 	}
 @else
 	:UNSUPPORTED_PUSHW addr is op9_15=0b0000010 & m1_9 & op0=1 {
@@ -277,6 +277,7 @@ define pcodeop icall;
 # Operations with 8 bit literal
 :DELAY k8 is op8_15=0b0001110 & k8 {
 	delay(k8:1);
+    ACC = 0;
 }
 :RET k8 is op8_15=0b0001111 & k8 {
 	A = k8;
@@ -473,14 +474,14 @@ define pcodeop wait1;
 :ADD A, m9 is op9_15=0b0100001 & m9 & A {
 	local EA:2 = m9;
 	local o:1 = *[ram]:1 EA;
-	A = A + o;
 	ZCAO_add(A, o);
+	A = A + o;
 }
 :SUB m9, A is op9_15=0b0100010 & m9 & A {
 	local EA:2 = m9;
 	local o:1 = *[ram]:1 EA;
-	*[ram]:1 EA = o - A;
 	ZCAO_sub(o, A);
+	*[ram]:1 EA = o - A;
 }
 :SUB A, m9 is op9_15=0b0100011 & m9 & A {
 	local EA:2 = m9;
@@ -671,6 +672,7 @@ define pcodeop wait1;
 	local EA:2 = m9;
 	local tmp:1 = *[ram]:1 EA;
 	delay(tmp);
+    ACC = 0;
 }
 
 

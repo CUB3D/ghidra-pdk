@@ -2,32 +2,6 @@
 # used in chips such as the PMS884
 # Partially based on reverse-engineered opcodes from here: https://free-pdk.github.io/instruction-sets/PDK16
 
-@include "pdk_common.sinc"
-define space ram      type=ram_space      size=2 wordsize=1; # SRAM
-
-define token inst (16)
-	op13_15=(13,15)
-	op12_15=(12,15)
-    op9_15=(9, 15)
-    op8_15=(8, 15)
-    op6_15=(6,15)
-    op5_15=(5,15)
-    op4_15=(4,15)
-	op0_15=(0,15)
-	op0=(0,0)
-    
-	m9=(0,8)
-	m1_9=(1,9)
-
-	k13=(0,12)
-	k8=(0,7)
-	pmode_k=(0,4)
-	
-	n=(6,8)
-	n_1=(9,11)
-	popwpc_n=(0,3)
-;
-
 :NOP is op0_15=0x0000 {
 	nop();	
 }
@@ -124,15 +98,19 @@ define pcodeop watchdog_reset;
 :unknown5 is op0_15=0b0000000000110001 {unknown();}
 
 :PUSHAF is op0_15=0b0000000000110010 {
-	*[ram]:1 sp = A;
-	*[ram]:1 (sp+1) = flag;
+	local tmp:2 = zext(sp);
+	*[ram]:1 tmp = A;
+	tmp = tmp + 1;
+	*[ram]:1 tmp = flag;
 	sp = sp + 2;
 }
 
 :POPAF is op0_15=0b0000000000110011 {
 	sp = sp - 2;
-	A = *[ram]:1 sp;
-	flag = *[ram]:1 (sp+1);
+	local tmp:2 = zext(sp);
+	A = *[ram]:1 tmp;
+	tmp = tmp + 1;
+	flag = *[ram]:1 tmp;
 }
 
 :unknown6 is op0_15=0b0000000000110100 {unknown();}
@@ -164,7 +142,8 @@ define pcodeop interrupt_disable;
 
 :RET is op0_15=0b0000000000111010 {
 	sp = sp - 2;
-	local tmp:2 = *[ram]:2 sp;
+	local s:2 = zext(sp);
+	local tmp:2 = *[ram]:2 s;
 	return [tmp];
 }
 
@@ -174,7 +153,8 @@ define pcodeop reti;
 	reti();
 	# The spec doesn't specify where the return addr is, guess
 	sp = sp - 2;
-	local tmp:2 = *[ram]:2 sp;
+	local s:2 = zext(sp);
+	local tmp:2 = *[ram]:2 s;
 	return [tmp];
 }
 
@@ -243,7 +223,8 @@ define pcodeop reti;
 @if defined(HAS_POPW_M)
 	:POPW addr is op9_15=0b0000010 & m1_9 & op0=0 [addr = m1_9 << 1;] {
 		sp = sp - 1;
-		local tmp:1 = *[ram]:1 sp;
+		local s:2 = zext(sp);
+		local tmp:1 = *[ram]:1 s;
 		*[ram]:1 addr:2 = tmp;
 	}
 @else
@@ -255,7 +236,8 @@ define pcodeop reti;
 @if defined(HAS_PUSHW_M)
 	:PUSHW addr is op9_15=0b0000010 & m1_9 & op0=1 [addr = m1_9 << 1;] {
 		local tmp:1 = *[ram]:1 addr:2;
-		*[ram]:1 sp = tmp;
+		local s:2 = zext(sp);
+		*[ram]:1 s = tmp;
 		sp = sp + 1;
 	}
 @else
@@ -299,7 +281,8 @@ define pcodeop icall;
 :RET k8 is op8_15=0b0001111 & k8 {
 	A = k8;
 	sp = sp - 2;
-	local tmp:2 = *[ram]:2 sp;
+	local s:2 = zext(sp);
+	local tmp:2 = *[ram]:2 s;
 	return [tmp];
 }
 
@@ -727,7 +710,8 @@ define pcodeop wait1;
 	goto [a];
 }
 :CALL k13 is op13_15=0b111 & k13 {
-	*[ram]:2 sp = inst_next;
+	local s:2 = zext(sp);
+	*[ram]:2 s = inst_next;
 	sp = sp + 2;
 	local a:2 = k13;
 	call [a];

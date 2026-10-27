@@ -2,31 +2,6 @@
 # used in chips such as the PMS134
 # Partially based on reverse-engineered opcodes from here: https://free-pdk.github.io/instruction-sets/PDK15
 
-@include "pdk_common.sinc"
-
-# ROM is up to 3kw
-# SRAM is up to 256 bytes
-define space ram      type=ram_space      size=1 wordsize=1; # SRAM
-
-define token inst (16)
-
-	op12_14=(12,14)
-    op10_14=(10, 14)
-    op8_14=(8, 14)
-    op7_14=(7, 14)
-	op0_14=(0,14)
-	op0=(0,0)
-    
-	m7=(0,6)
-	m8=(0,7)
-	m1_8=(1,8)
-
-	k12=(0,11)
-	k8=(0,7)
-	
-	n=(7,9)
-;
-
 :NOP is op0_14=0x0000 {
 	nop();	
 }

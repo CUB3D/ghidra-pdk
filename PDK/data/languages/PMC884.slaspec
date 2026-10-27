@@ -8,9 +8,7 @@
 @define HAS_POPW_M 1
 @define HAS_POPW_PCN 1
 
-define token inst_io (16)
-	io=(0,5)
-;
+@include "pdk16_pre.sinc"
 
 attach variables [ io ] [
 	flag   # 00

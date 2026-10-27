@@ -1,0 +1,11 @@
+.antProperties.xml
+.classpath
+.project
+dist/*.zip
+.gradle
+data/languages/skel.sla
+.idea
+.settings
+/bin/
+.DS_Store
+build/

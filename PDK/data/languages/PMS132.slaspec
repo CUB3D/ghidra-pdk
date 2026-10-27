@@ -2,9 +2,7 @@
 @define HAS_MUL 1
 @define HAS_COMP_NADD 1
 
-define token inst_io (16)
-	io=(0,5)
-;
+@include "pdk14_pre.sinc"
 
 attach variables [ io ] [
 	flag   # 00

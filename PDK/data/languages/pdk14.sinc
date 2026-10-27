@@ -3,33 +3,6 @@
 # Partially based on reverse-engineered opcodes from here: https://free-pdk.github.io/instruction-sets/PDK14
 #  as well as spec from here: https://web.archive.org/web/20250319134225/https://www.padauk.com.cn/upload/doc/PMS132(B)%20datasheet_EN_V109_20250121.pdf
 
-@include "pdk_common.sinc"
-
-# ROM is from 1.5k to 2k words
-# SRAM is from 80 to 128 bytes
-define space ram      type=ram_space      size=1 wordsize=1; # SRAM
-
-define token inst (16)
-
-	op11_13=(11,13)
-	
-    op9_13=(9, 13)
-    op8_13=(8, 13)
-    op7_13=(7, 13)
-    op6_13=(6, 13)
-	op0_13=(0,13)
-	op0=(0,0)
-    
-	m6=(0,5)
-	m7=(0,6)
-	m1_7=(1,7)
-
-	k11=(0,10)
-	k8=(0,7)
-	
-	n=(6,8)
-;
-
 :NOP is op0_13=0x0000 {
 	nop();	
 }

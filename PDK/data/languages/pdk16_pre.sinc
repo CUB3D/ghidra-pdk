@@ -1,0 +1,28 @@
+@include "pdk_common.sinc"
+
+define space ram      type=ram_space      size=2 wordsize=1; # SRAM
+
+define token inst (16)
+	op13_15=(13,15)
+	op12_15=(12,15)
+    op9_15=(9, 15)
+    op8_15=(8, 15)
+    op6_15=(6,15)
+    op5_15=(5,15)
+    op4_15=(4,15)
+	op0_15=(0,15)
+	op0=(0,0)
+	
+	io=(0,5)
+    
+	m9=(0,8)
+	m1_9=(1,9)
+
+	k13=(0,12)
+	k8=(0,7)
+	pmode_k=(0,4)
+	
+	n=(6,8)
+	n_1=(9,11)
+	popwpc_n=(0,3)
+;

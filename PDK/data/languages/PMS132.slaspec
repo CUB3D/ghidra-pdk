@@ -2,7 +2,9 @@
 @define HAS_MUL 1
 @define HAS_COMP_NADD 1
 
-@include "pdk14.sinc"
+define token inst_io (16)
+	io=(0,5)
+;
 
 attach variables [ io ] [
 	flag   # 00
@@ -66,3 +68,6 @@ attach variables [ io ] [
 	tm3b   # 3f
 	# datasheet also has two registers for 3f, is it tm3b or adcrl
 ];
+
+@include "pdk14.sinc"
+

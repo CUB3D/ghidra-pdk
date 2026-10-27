@@ -2,7 +2,9 @@
 
 @define HAS_MUL 1
 
-@include "pdk15.sinc"
+define token inst_io (16)
+	io=(0,6)
+;
 
 attach variables [ io ] [
 	flag   # 00
@@ -78,3 +80,5 @@ attach variables [ io ] [
 	_ _ _ _ _ _ _
 	_ _ _ _
 ];
+
+@include "pdk15.sinc"

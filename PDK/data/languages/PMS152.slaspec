@@ -1,7 +1,9 @@
 
 @define HAS_COMP_NADD 1
 
-@include "pdk14.sinc"
+define token inst (16)
+	io=(0,5)
+;
 
 attach variables [ io ] [
 	flag   # 00
@@ -52,3 +54,5 @@ attach variables [ io ] [
 	_ _ _ _ _ _ _ _ _ _ 
 	_ _ _ _ _ _
 ];
+
+@include "pdk14.sinc"

@@ -8,7 +8,9 @@
 @define HAS_POPW_M 1
 @define HAS_POPW_PCN 1
 
-@include "pdk16.sinc"
+define token inst_io (16)
+	io=(0,5)
+;
 
 attach variables [ io ] [
 	flag   # 00
@@ -71,3 +73,6 @@ attach variables [ io ] [
 	# This has no official name
 	fppa_reset # 3f
 ];
+
+@include "pdk16.sinc"
+

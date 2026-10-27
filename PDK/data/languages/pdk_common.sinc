@@ -134,16 +134,16 @@ define bitrange ZF=flag[0,1] # Zero result
 
 macro ZCAO_add(a, b) {
 	ZF = (a + b) == 0;
-	AC = carry(a&0xF, b&0xF);
+	AC = (((a & 0xF) + (b & 0xF)) >> 4) & 1;
 	CF = carry(a, b);
-	OV = carry(a&0x7F, b&0x7F) ^ CF;
+	OV = ((((a & 0x7F) + (b & 0x7f)) >> 7) & 1) ^ CF;
 }
 
 macro ZCAO_sub(a, b) {
 	ZF = (a - b) == 0;
-	AC = scarry(a&0xF, b&0xF);
-	CF = scarry(a, b);
-	OV = scarry(a&0x7F, b&0x7F) ^ CF;
+    AC = (a & 0xF) < (b < 0xF);
+	CF = a < b;
+	OV = ((a&0x7F) < (b&0x7F)) ^ CF;
 }
 
 define pcodeop unknown;

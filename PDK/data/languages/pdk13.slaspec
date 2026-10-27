@@ -117,8 +117,7 @@ attach variables [ io ] [
 :unknown3 is op0_12=0x0016 {unknown();}
 
 :PCADD A is op0_12=0x0017 & A {
-    # TODO: is this +A or <<1?
-	local dest:2 = inst_start + zext(A);
+	local dest:2 = inst_start + (zext(A) << 1);
 	goto [dest];
 }
 
@@ -579,13 +578,13 @@ define pcodeop reti;
 	A = k8:1;
 }
 
-:GOTO k10 is op10_12=0b110 & k10 {
-	local a:2 = k10;
+:GOTO dest is op10_12=0b110 & k10 [dest = k10 << 1;] {
+	local a:2 = dest;
 	goto [a];
 }
-:CALL k10 is op10_12=0b111 & k10 {
+:CALL dest is op10_12=0b111 & k10 [dest = k10 << 1;] {
 	*[ram]:2 sp = inst_next;
 	sp = sp + 2;
-	local a:2 = k10;
+	local a:2 = dest;
 	call [a];
 }

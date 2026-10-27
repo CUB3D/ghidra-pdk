@@ -277,7 +277,7 @@ define pcodeop icall;
 # Operations with 8 bit literal
 :DELAY k8 is op8_15=0b0001110 & k8 {
 	delay(k8:1);
-    ACC = 0;
+    A = 0;
 }
 :RET k8 is op8_15=0b0001111 & k8 {
 	A = k8;
@@ -672,7 +672,7 @@ define pcodeop wait1;
 	local EA:2 = m9;
 	local tmp:1 = *[ram]:1 EA;
 	delay(tmp);
-    ACC = 0;
+    A = 0;
 }
 
 

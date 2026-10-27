@@ -58,7 +58,8 @@ attach variables [ io ] [
 	pwmg2cubl # 31
 	tm3c      # 32
 	tm3ct     # 33
-	_ _ _ _ _ _ _
+    tm3s      # 34
+	_ _ _ _ _ _
 	adcc   # 3b
 	adcm   # 3c
 	arcrgc # 3d

@@ -2,8 +2,8 @@
 # used in chips such as the PMS884
 # Partially based on reverse-engineered opcodes from here: https://free-pdk.github.io/instruction-sets/PDK16
 
-define space ram      type=ram_space      size=2 wordsize=1; # SRAM
 @include "pdk_common.sinc"
+define space ram      type=ram_space      size=2 wordsize=1; # SRAM
 
 define token inst (16)
 
@@ -128,15 +128,15 @@ define pcodeop watchdog_reset;
 :unknown5 is op0_15=0b0000000000110001 {unknown();}
 
 :PUSHAF is op0_15=0b0000000000110010 {
-	*[ram] sp = A;
-	*[ram] (sp+1) = flag;
+	*[ram]:1 sp = A;
+	*[ram]:1 (sp+1) = flag;
 	sp = sp + 2;
 }
 
 :POPAF is op0_15=0b0000000000110011 {
 	sp = sp - 2;
-	A = *[ram] sp;
-	flag = *[ram] (sp+1);
+	A = *[ram]:1 sp;
+	flag = *[ram]:1 (sp+1);
 }
 
 :unknown6 is op0_15=0b0000000000110100 {unknown();}

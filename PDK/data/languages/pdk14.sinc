@@ -3,10 +3,11 @@
 # Partially based on reverse-engineered opcodes from here: https://free-pdk.github.io/instruction-sets/PDK14
 #  as well as spec from here: https://web.archive.org/web/20250319134225/https://www.padauk.com.cn/upload/doc/PMS132(B)%20datasheet_EN_V109_20250121.pdf
 
+@include "pdk_common.sinc"
+
 # ROM is from 1.5k to 2k words
 # SRAM is from 80 to 128 bytes
 define space ram      type=ram_space      size=1 wordsize=1; # SRAM
-@include "pdk_common.sinc"
 
 define token inst (16)
 
@@ -244,12 +245,12 @@ define pcodeop reti;
 
 :IDXM addr, A is op7_13=0b0000111 & m1_7 & op0=0 & A [addr = m1_7 << 1;] {
     local ptr:2 = *[ram]:2 addr:1;
-	*[ram]:1 ptr:2 = A;
+	*[ram]:1 ptr:1 = A;
 }
 
 :IDXM A, addr is op7_13=0b0000111 & m1_7 & op0=1 & A [addr = m1_7 << 1;] {
     local ptr:2 = *[ram]:2 addr:1;
-	A = *[ram]:1 ptr:2;
+	A = *[ram]:1 ptr:1;
 }
 
 # Special op with CF an IO

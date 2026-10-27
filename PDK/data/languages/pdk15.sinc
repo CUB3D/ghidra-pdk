@@ -2,10 +2,11 @@
 # used in chips such as the PMS134
 # Partially based on reverse-engineered opcodes from here: https://free-pdk.github.io/instruction-sets/PDK15
 
+@include "pdk_common.sinc"
+
 # ROM is up to 3kw
 # SRAM is up to 256 bytes
 define space ram      type=ram_space      size=1 wordsize=1; # SRAM
-@include "pdk_common.sinc"
 
 define token inst (16)
 
@@ -235,12 +236,12 @@ define pcodeop reti;
 
 :IDXM addr, A is op8_14=0b0000111 & m1_8 & op0=0 & A [addr = m1_8 << 1;]{
     local ptr:2 = *[ram]:2 addr:1;
-	*[ram]:1 ptr:2 = A;
+	*[ram]:1 ptr:1 = A;
 }
 
 :IDXM A, addr is op8_14=0b0000111 & m1_8 & op0=1 & A [addr = m1_8 << 1;] {
     local ptr:2 = *[ram]:2 addr:1;
-	A = *[ram]:1 ptr:2;
+	A = *[ram]:1 ptr:1;
 }
 
 

@@ -106,6 +106,19 @@ define register offset=0x10 size=1 [
 	plsrh
 	plsrl
 	fppa_reset
+
+    # placeholders
+    io01
+    io07
+    io0B
+    io19
+    io1A
+    io1B
+    io1C
+    io1D
+    io1E
+    io1F
+
 ];
 
 define register offset=0x60 size=2 [

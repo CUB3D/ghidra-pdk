@@ -3,10 +3,11 @@
 # Partially based on reverse-engineered opcodes from here: https://free-pdk.github.io/instruction-sets/PDK13
 # Instruction semantics based on definitions from here: https://www.padauk.com.cn/upload/doc/PMS134G%20datasheet_EN_V001_20250512.pdf and https://www.padauk.com.tw/upload/doc/PMS15A,PMS150C%20datasheet_EN_V110_20230216.pdf
 
+@include "pdk_common.sinc"
+
 # ROM is 1024 words
 # SRAM is 64 bytes
 define space ram      type=ram_space      size=1 wordsize=1; # SRAM
-@include "pdk_common.sinc"
 
 define token inst (16)
     op10_12=(10,12)
@@ -260,12 +261,12 @@ define pcodeop reti;
 
 :IDXM addr, A is op5_12=0b00000111 & m3 & op0=0 & A [addr = m3 << 1;]{
     local ptr:2 = *[ram]:2 addr:1;
-	*[ram]:1 ptr:2 = A;
+	*[ram]:1 ptr:1 = A;
 }
 
 :IDXM A, addr is op5_12=0b00000111 & m3 & op0=1 & A [addr = m3 << 1;] {
     local ptr:2 = *[ram]:2 addr:1;
-	A = *[ram]:1 ptr:2;
+	A = *[ram]:1 ptr:1;
 }
 
 # Return with A

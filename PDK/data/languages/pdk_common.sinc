@@ -141,7 +141,7 @@ macro ZCAO_add(a, b) {
 
 macro ZCAO_sub(a, b) {
 	ZF = (a - b) == 0;
-    AC = (a & 0xF) < (b < 0xF);
+    AC = (a & 0xF) < (b & 0xF);
 	CF = a < b;
 	OV = ((a&0x7F) < (b&0x7F)) ^ CF;
 }

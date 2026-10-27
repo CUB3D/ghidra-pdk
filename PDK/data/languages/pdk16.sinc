@@ -521,9 +521,9 @@ define pcodeop wait1;
 	
 	ZF = res == 0;
 	AC = (m1&0xF) < ((A&0xF) + CF);
-	local ores:2 = ((zext(m1&0x7F) - zext(A&0x7F) - zext(CF))>>7)^zext(CF);
-	OV = ores:1;
 	local wres:2 = ((zext(m1) - zext(A) - zext(CF)) >> 8) & 1;
+	local ores:2 = ((zext(m1&0x7F) - zext(A&0x7F) - zext(CF))>>7)^zext(wres);
+	OV = ores:1;
 	CF = wres:1;
 }
 :SUBC A, m9 is op9_15=0b0100111 & m9 & A {
@@ -532,9 +532,9 @@ define pcodeop wait1;
 	
 	ZF = res == 0;
 	AC = (A&0xF) < ((m1&0xF) + CF);
-	local ores:2 = ((zext(A&0x7F) - zext(m1&0x7F) - zext(CF))>>7)^zext(CF);
-	OV = ores:1;
 	local wres:2 = ((zext(A) - zext(m1) - zext(CF)) >> 8) & 1;
+	local ores:2 = ((zext(A&0x7F) - zext(m1&0x7F) - zext(CF))>>7)^zext(wres);
+	OV = ores:1;
 	CF = wres:1;
 	
 	A = res;

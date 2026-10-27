@@ -333,9 +333,9 @@ define pcodeop reti;
 	
 	ZF = res == 0;
 	AC = (((A&0xF) + (m1&0xF) + CF) >> 4) & 1;
-	local ores:2 = ((zext(A&0x7F) + zext(m1&0x7F) + zext(CF))>>7)^zext(CF);
-	OV = ores:1;
 	local wres:2 = ((zext(A) + zext(m1) + zext(CF)) >> 8) & 1;
+	local ores:2 = ((zext(A&0x7F) + zext(m1&0x7F) + zext(CF))>>7)^wres;
+	OV = ores:1;
 	CF = wres:1;
 }
 :SUBC m6, A is op6_12=0b0010011 & m6 & A {
@@ -345,9 +345,9 @@ define pcodeop reti;
 	
 	ZF = res == 0;
 	AC = (m1&0xF) < ((A&0xF) + CF);
-	local ores:2 = ((zext(m1&0x7F) - zext(A&0x7F) - zext(CF))>>7)^zext(CF);
-	OV = ores:1;
 	local wres:2 = ((zext(m1) - zext(A) - zext(CF)) >> 8) & 1;
+	local ores:2 = ((zext(m1&0x7F) - zext(A&0x7F) - zext(CF))>>7)^wres;
+	OV = ores:1;
 	CF = wres:1;
 }
 :AND m6, A is op6_12=0b0010100 & m6 & A {
@@ -389,9 +389,9 @@ define pcodeop reti;
 	
 	ZF = res == 0;
 	AC = ((A&0xF + m1&0xF + CF) >> 4) & 1;
-	local ores:2 = ((zext(A&0x7F) + zext(m1&0x7F) + zext(CF))>>7)^zext(CF);
-	OV = ores:1;
 	local wres:2 = ((zext(A) + zext(m1) + zext(CF)) >> 8) & 1;
+	local ores:2 = ((zext(A&0x7F) + zext(m1&0x7F) + zext(CF))>>7)^wres;
+	OV = ores:1;
 	CF = wres:1;
 	
 	A = res;
@@ -402,9 +402,9 @@ define pcodeop reti;
 	
 	ZF = res == 0;
 	AC = A&0xF < (m1&0xF + CF);
-	local ores:2 = ((zext(A&0x7F) - zext(m1&0x7F) - zext(CF))>>7)^zext(CF);
-	OV = ores:1;
 	local wres:2 = ((zext(A) - zext(m1) - zext(CF)) >> 8) & 1;
+	local ores:2 = ((zext(A&0x7F) - zext(m1&0x7F) - zext(CF))>>7)^wres;
+	OV = ores:1;
 	CF = wres:1;
 	
 	A = res;

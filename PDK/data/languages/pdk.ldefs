@@ -6,7 +6,7 @@
             endian="little"
             size="16"
             variant="default"
-            version="1.0"
+            version="1.1"
             slafile="pdk13.sla"
             processorspec="pdk13.pspec"
             id="pdk13:LE:16:default">
@@ -18,7 +18,7 @@
             endian="little"
             size="16"
             variant="default"
-            version="1.0"
+            version="1.1"
             slafile="PMS152.sla"
             processorspec="pdk14.pspec"
             id="pms152:LE:16:default">
@@ -29,7 +29,7 @@
             endian="little"
             size="16"
             variant="default"
-            version="1.0"
+            version="1.1"
             slafile="PMS132.sla"
             processorspec="pdk14.pspec"
             id="pms132:LE:16:default">
@@ -42,7 +42,7 @@
             endian="little"
             size="16"
             variant="default"
-            version="1.0"
+            version="1.1"
             slafile="PMS134.sla"
             processorspec="pdk15.pspec"
             id="pms134:LE:16:default">
@@ -54,7 +54,7 @@
             endian="little"
             size="16"
             variant="default"
-            version="1.0"
+            version="1.1"
             slafile="PMC884.sla"
             processorspec="PMC884.pspec"
             id="pmc884:LE:16:default">

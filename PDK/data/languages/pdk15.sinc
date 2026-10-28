@@ -43,7 +43,7 @@
 :unknown3 is op0_14=0b000000001100110 {unknown();}
 
 :PCADD A is op0_14=0b000000001100111 & A {
-	local dest:2 = inst_start + zext(A);
+	local dest:2 = inst_start + (zext(A) << 1);
     goto [dest];
 }
 
@@ -298,9 +298,9 @@ define pcodeop reti;
 	
 	ZF = res == 0;
 	AC = (((A&0xF) + (m1&0xF) + CF) >> 4) & 1;
-	local ores:2 = ((zext(A&0x7F) + zext(m1&0x7F) + zext(CF))>>7)^zext(CF);
-	OV = ores:1;
 	local wres:2 = ((zext(A) + zext(m1) + zext(CF)) >> 8) & 1;
+	local ores:2 = ((zext(A&0x7F) + zext(m1&0x7F) + zext(CF))>>7)^wres;
+	OV = ores:1;
 	CF = wres:1;
 }
 :SUBC m8, A is op8_14=0b0010011 & m8 & A {
@@ -310,9 +310,9 @@ define pcodeop reti;
 	
 	ZF = res == 0;
 	AC = (m1&0xF) < ((A&0xF) + CF);
-	local ores:2 = ((zext(m1&0x7F) - zext(A&0x7F) - zext(CF))>>7)^zext(CF);
-	OV = ores:1;
 	local wres:2 = ((zext(m1) - zext(A) - zext(CF)) >> 8) & 1;
+	local ores:2 = ((zext(m1&0x7F) - zext(A&0x7F) - zext(CF))>>7)^wres;
+	OV = ores:1;
 	CF = wres:1;
 }
 :AND m8, A is op8_14=0b0010100 & m8 & A {
@@ -339,14 +339,14 @@ define pcodeop reti;
 :ADD A, m8 is op8_14=0b0011000 & m8 & A {
 	local EA:1 = m8;
 	local o:1 = *[ram]:1 EA;
-	A = A + o;
 	ZCAO_add(A, o);
+	A = A + o;
 }
 :SUB A, m8 is op8_14=0b0011001 & m8 & A {
 	local EA:1 = m8;
 	local o:1 = *[ram]:1 EA;
-	A = A - o;
 	ZCAO_sub(A, o);
+	A = A - o;
 }
 :ADDC A, m8 is op8_14=0b0011010 & m8 & A {
 	local m1:1 = *[ram]:1 m8:1;
@@ -599,13 +599,13 @@ define pcodeop reti;
 
 # Control transfers
 
-:GOTO k12 is op12_14=0b110 & k12 {
-	local a:2 = k12;
+:GOTO dest is op12_14=0b110 & k12 [dest = k12<<1;] {
+	local a:2 = dest;
 	goto [a];
 }
-:CALL k12 is op12_14=0b111 & k12 {
+:CALL dest is op12_14=0b111 & k12 [dest = k12<<1;] {
 	*[ram]:2 sp = inst_next;
 	sp = sp + 2;
-	local a:2 = k12;
+	local a:2 = dest;
 	call [a];
 }

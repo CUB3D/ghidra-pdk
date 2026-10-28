@@ -192,11 +192,15 @@ define pcodeop reti;
 # Memory
 
 :LDTABL addr is op8_14=0b0000101 & m1_8 & op0=0 [ addr = m1_8 << 1;] {
-	A = *[rom]:1 addr:2;
+    local tmp:2 = *[ram]:2 addr:2;
+    tmp = (tmp << 1) + 1;
+	A = *[rom]:1 tmp;
 }
 
 :LDTABH addr is op8_14=0b0000101 & m1_8 & op0=1 [ addr = m1_8 << 1;] {
-	A = *[rom]:1 (addr:2+1);
+    local tmp:2 = *[ram]:2 addr:2;
+    tmp = (tmp << 1) + 1;
+	A = *[rom]:1 tmp;
 }
 
 :STT16 addr is op8_14=0b0000110 & m1_8 & op0=0 [addr = m1_8 << 1;] {

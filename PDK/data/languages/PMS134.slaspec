@@ -1,6 +1,7 @@
 # PMS134 specification: https://web.archive.org/web/20250319234116/https://www.padauk.com.cn/upload/doc/PMS133,%20PMS134%20datasheet_EN_V108_20240823.pdf
 
 @define HAS_MUL 1
+@define HAS_COMP_NADD 1
 
 @include "pdk15_pre.sinc"
 

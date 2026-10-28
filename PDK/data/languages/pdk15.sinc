@@ -191,32 +191,32 @@ define pcodeop reti;
 
 # Memory
 
-:LDTABL addr is op8_14=0b0000101 & m1_8 & op0=0 [ addr = m1_8 << 1;] {
-    local tmp:2 = *[ram]:2 addr:2;
+:LDTABL addr is op8_14=0b0000101 & m1_7 & op0=0 [ addr = m1_7 << 1;] {
+    local tmp:2 = *[ram]:2 addr:1;
     tmp = (tmp << 1) + 1;
 	A = *[rom]:1 tmp;
 }
 
-:LDTABH addr is op8_14=0b0000101 & m1_8 & op0=1 [ addr = m1_8 << 1;] {
-    local tmp:2 = *[ram]:2 addr:2;
+:LDTABH addr is op8_14=0b0000101 & m1_7 & op0=1 [ addr = m1_7 << 1;] {
+    local tmp:2 = *[ram]:2 addr:1;
     tmp = (tmp << 1) + 1;
 	A = *[rom]:1 tmp;
 }
 
-:STT16 addr is op8_14=0b0000110 & m1_8 & op0=0 [addr = m1_8 << 1;] {
+:STT16 addr is op8_14=0b0000110 & m1_7 & op0=0 [addr = m1_7 << 1;] {
 	Timer16 = *[ram]:2 addr:1;
 }
 
-:LDT16 addr is op8_14=0b0000110 & m1_8 & op0=1 [addr = m1_8 << 1;] {
+:LDT16 addr is op8_14=0b0000110 & m1_7 & op0=1 [addr = m1_7 << 1;] {
 	*[ram]:2 addr:1 = Timer16;
 }
 
-:IDXM addr, A is op8_14=0b0000111 & m1_8 & op0=0 & A [addr = m1_8 << 1;]{
+:IDXM addr, A is op8_14=0b0000111 & m1_7 & op0=0 & A [addr = m1_7 << 1;]{
     local ptr:2 = *[ram]:2 addr:1;
 	*[ram]:1 ptr:1 = A;
 }
 
-:IDXM A, addr is op8_14=0b0000111 & m1_8 & op0=1 & A [addr = m1_8 << 1;] {
+:IDXM A, addr is op8_14=0b0000111 & m1_7 & op0=1 & A [addr = m1_7 << 1;] {
     local ptr:2 = *[ram]:2 addr:1;
 	A = *[ram]:1 ptr:1;
 }

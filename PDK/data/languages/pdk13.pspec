@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <processor_spec>
-  <programcounter register="PC"/>
+  <programcounter register="PC_"/>
  
   <default_symbols>
   	<symbol name="reset" address="rom:0000"/>

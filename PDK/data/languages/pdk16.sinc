@@ -211,37 +211,37 @@ define pcodeop reti;
 # Memory
 
 # Store to timer16 from data memory
-:STT16 addr is op9_15=0b0000001 & m1_9 & op0=0 [addr = m1_9 << 1;] {
+:STT16 addr is op9_15=0b0000001 & m1_8 & op0=0 [addr = m1_8 << 1;] {
 	Timer16 = *[ram]:2 addr:2;
 }
 
 # Load to data memory from timer16
-:LDT16 addr is op9_15=0b0000001 & m1_9 & op0=1 [addr = m1_9 << 1;] {
+:LDT16 addr is op9_15=0b0000001 & m1_8 & op0=1 [addr = m1_8 << 1;] {
 	*[ram]:2 addr:2 = Timer16;
 }
 
 @if defined(HAS_POPW_M)
-	:POPW addr is op9_15=0b0000010 & m1_9 & op0=0 [addr = m1_9 << 1;] {
+	:POPW addr is op9_15=0b0000010 & m1_8 & op0=0 [addr = m1_8 << 1;] {
 		sp = sp - 2;
 		local s:2 = zext(sp);
 		local tmp:2 = *[ram]:2 s;
 		*[ram]:2 addr:2 = tmp;
 	}
 @else
-	:UNSUPPORTED_POPW addr is op9_15=0b0000010 & m1_9 & op0=0 {
+	:UNSUPPORTED_POPW addr is op9_15=0b0000010 & m1_8 & op0=0 {
 		unknown();
 	}
 @endif
 
 @if defined(HAS_PUSHW_M)
-	:PUSHW addr is op9_15=0b0000010 & m1_9 & op0=1 [addr = m1_9 << 1;] {
+	:PUSHW addr is op9_15=0b0000010 & m1_8 & op0=1 [addr = m1_8 << 1;] {
 		local tmp:2 = *[ram]:2 addr:2;
 		local s:2 = zext(sp);
 		*[ram]:2 s = tmp;
 		sp = sp + 2;
 	}
 @else
-	:UNSUPPORTED_PUSHW addr is op9_15=0b0000010 & m1_9 & op0=1 {
+	:UNSUPPORTED_PUSHW addr is op9_15=0b0000010 & m1_8 & op0=1 {
 		unknown();
 	}
 @endif
@@ -249,29 +249,29 @@ define pcodeop reti;
 # These are both deprecated and not used on new chips, their semantics are unknown
 define pcodeop igoto;
 define pcodeop icall;
-:IGOTO addr is op9_15=0b0000011 & m1_9 & op0=0 [addr = m1_9 << 1;] {
+:IGOTO addr is op9_15=0b0000011 & m1_8 & op0=0 [addr = m1_8 << 1;] {
 	igoto(addr:2);
 }
-:ICALL addr is op9_15=0b0000011 & m1_9 & op0=1 [addr = m1_9 << 1;] {
+:ICALL addr is op9_15=0b0000011 & m1_8 & op0=1 [addr = m1_8 << 1;] {
 	icall(addr:2);
 }
 
-:IDXM addr, A is op9_15=0b0000100 & m1_9 & op0=0 & A [addr = m1_9 << 1;] {
+:IDXM addr, A is op9_15=0b0000100 & m1_8 & op0=0 & A [addr = m1_8 << 1;] {
     local ptr:2 = *[ram]:2 addr:2;
 	*[ram]:1 ptr:2 = A;
 }
 
-:IDXM A, addr is op9_15=0b0000100 & m1_9 & op0=1 & A [addr = m1_9 << 1;] {
+:IDXM A, addr is op9_15=0b0000100 & m1_8 & op0=1 & A [addr = m1_8 << 1;] {
     local ptr:2 = *[ram]:2 addr:2;
 	A = *[ram]:1 ptr:2;
 }
-:LDTABL addr is op9_15=0b0000101 & m1_9 & op0=0 [ addr = m1_9 << 1;] {
+:LDTABL addr is op9_15=0b0000101 & m1_8 & op0=0 [ addr = m1_8 << 1;] {
     local tmp:2 = *[ram]:2 addr:2;
     tmp = tmp << 1;
 	A = *[rom]:1 tmp;
 }
 
-:LDTABH addr is op9_15=0b0000101 & m1_9 & op0=1 [ addr = m1_9 << 1;] {
+:LDTABH addr is op9_15=0b0000101 & m1_8 & op0=1 [ addr = m1_8 << 1;] {
     local tmp:2 = *[ram]:2 addr:2;
     tmp = (tmp << 1) + 1;
 	A = *[rom]:1 tmp;

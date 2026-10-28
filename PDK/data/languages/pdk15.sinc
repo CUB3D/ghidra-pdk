@@ -193,7 +193,7 @@ define pcodeop reti;
 
 :LDTABL addr is op8_14=0b0000101 & m1_7 & op0=0 [ addr = m1_7 << 1;] {
     local tmp:2 = *[ram]:2 addr:1;
-    tmp = (tmp << 1) + 1;
+    tmp = tmp << 1;
 	A = *[rom]:1 tmp;
 }
 

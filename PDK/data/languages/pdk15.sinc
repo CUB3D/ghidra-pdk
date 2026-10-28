@@ -353,7 +353,7 @@ define pcodeop reti;
 	local res:1 = A + m1 + CF;
 	
 	ZF = res == 0;
-	AC = ((A&0xF + m1&0xF + CF) >> 4) & 1;
+	AC = (((A&0xF) + (m1&0xF) + CF) >> 4) & 1;
 	local wres:2 = ((zext(A) + zext(m1) + zext(CF)) >> 8) & 1;
 	local ores:2 = ((zext(A&0x7F) + zext(m1&0x7F) + zext(CF))>>7)^wres;
 	OV = ores:1;
@@ -366,7 +366,7 @@ define pcodeop reti;
 	local res:1 = A - m1 - CF;
 	
 	ZF = res == 0;
-	AC = A&0xF < (m1&0xF + CF);
+	AC = (A&0xF) < ((m1&0xF) + CF);
 	local wres:2 = ((zext(A) - zext(m1) - zext(CF)) >> 8) & 1;
 	local ores:2 = ((zext(A&0x7F) - zext(m1&0x7F) - zext(CF))>>7)^wres;
 	OV = ores:1;
